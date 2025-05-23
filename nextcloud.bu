@@ -50,7 +50,7 @@ storage:
           ContainerName=anubis-nextcloud
           Image=ghcr.io/techarohq/anubis
           Pod=nextcloud.pod
-          Environment=TARGET=nextcloud:80
+          Environment=TARGET=http://nextcloud
           Label=traefik.enable="true"
           Label=traefik.http.routers.anubis-nextcloud.rule=Host'(`hello.local`)'
           Label=traefik.http.middlewares.anubis-nextcloud-https-redirect.redirectscheme.scheme="https"
