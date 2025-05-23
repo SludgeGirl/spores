@@ -1,0 +1,46 @@
+variant: fcos
+version: 1.6.0
+ignition:
+  config:
+    merge:
+      - local: nextcloud.ign
+passwd:
+  users:
+    - name: root
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILbw+AVDQKQn8qiYNFgzN1CNHNnv4fnmZmbeXbk7a013 sludge@apothecium
+
+    - name: core
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILbw+AVDQKQn8qiYNFgzN1CNHNnv4fnmZmbeXbk7a013 sludge@apothecium
+storage:
+  files:
+    - path: /etc/containers/systemd/traefik.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Traefik
+          Wants=network-online.target podman.socket
+          After=network-online.target podman.socket
+
+          [Container]
+          ContainerName=traefik
+          Image=docker.io/traefik
+          Volume=/run/podman/podman.sock:/var/run/docker.sock:z
+          PublishPort=8080:8080
+          PublishPort=80:80
+          PublishPort=443:443
+          Exec=--api.dashboard=true \
+                --api.insecure=true \
+                --certificatesresolvers.lets-encrypt.acme.email="alicembrooks@protonmail.com" \
+                --certificatesresolvers.lets-encrypt.acme.storage=/acme.json \
+                --certificatesresolvers.lets-encrypt.acme.tlschallenge=true \
+                --entrypoints.http.address=":80" \
+                --entrypoints.http.http.redirections.entryPoint.to=https \
+                --entrypoints.http.http.redirections.entryPoint.scheme=https \
+                --entrypoints.https.address=":443" \
+                --providers.docker=true
+          SecurityLabelType=container_runtime_t
+
+          [Install]
+          WantedBy=multi-user.target
