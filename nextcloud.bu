@@ -1,0 +1,65 @@
+variant: fcos
+version: 1.6.0
+storage:
+  files:
+    - path: /etc/containers/systemd/nextcloud.pod
+      contents:
+        inline: |
+          [Unit]
+          Description=Nextcloud Pod
+
+          [Pod]
+          PodName=nextcloud
+          Network=nextcloud.network
+
+    - path: /etc/containers/systemd/nextcloud.network
+      contents:
+        inline: |
+          [Unit]
+          Description=Nextcloud
+
+          [Network]
+          Subnet=192.168.30.0/24
+          Gateway=192.168.30.1
+
+    - path: /etc/containers/systemd/nextcloud.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Nextcloud
+          Wants=network-online.target
+          After=network-online.target
+
+          [Container]
+          ContainerName=nextcloud
+          Image=docker.io/nextcloud
+          Pod=nextcloud.pod
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - path: /etc/containers/systemd/anubis-nextcloud.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Anubis Nextcloud
+          Wants=network-online.target
+          After=network-online.target
+
+          [Container]
+          ContainerName=anubis-nextcloud
+          Image=ghcr.io/techarohq/anubis
+          Pod=nextcloud.pod
+          Environment=TARGET=nextcloud:80
+          Label=traefik.enable="true"
+          Label=traefik.http.routers.anubis-nextcloud.rule=Host'(`hello.local`)'
+          Label=traefik.http.middlewares.anubis-nextcloud-https-redirect.redirectscheme.scheme="https"
+          Label=traefik.http.routers.anubis-nextcloud.middlewares="anubis-nextcloud-https-redirect"
+          Label=traefik.http.routers.anubis-nextcloud-secure.entrypoints="https"
+          Label=traefik.http.routers.anubis-nextcloud-secure.rule=Host'(`hello.local`)'
+          Label=traefik.http.routers.anubis-nextcloud-secure.tls="true"
+          Label=traefik.http.routers.anubis-nextcloud-secure.tls.certresolver=lets-encrypt
+          Label=traefik.http.services.anubis-nextcloud.loadbalancer.server.port="8923"
+
+          [Install]
+          WantedBy=multi-user.target
