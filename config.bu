@@ -13,6 +13,23 @@ passwd:
     - name: core
       ssh_authorized_keys:
         - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILbw+AVDQKQn8qiYNFgzN1CNHNnv4fnmZmbeXbk7a013 sludge@apothecium
+
+systemd:
+  units:
+    - name: var-lib-data.mount
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Mount persistent data
+
+        [Mount]
+        What=/dev/persistent/data
+        Where=/var/lib/data
+        Type=xfs
+
+        [Install]
+        WantedBy=multi-user.target
+
 storage:
   files:
     - path: /etc/containers/systemd/traefik.container

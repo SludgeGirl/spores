@@ -24,7 +24,12 @@ IGNITION_DEVICE_ARG=(--qemu-commandline="-fw_cfg name=opt/com.coreos/config,file
 # Setup the correct SELinux label to allow access to the config
 chcon --verbose --type svirt_home_t ${IGNITION_CONFIG}
 
+if [ ! -e ./persistent.qcow2 ]; then
+  qemu-img create -f qcow2 persistent.qcow2 10G
+fi
+
 sudo virt-install --connect="qemu:///system" --name="${VM_NAME}" --vcpus="${VCPUS}" --memory="${RAM_MB}" \
         --os-variant="fedora-coreos-$STREAM" --import --graphics=none \
         --disk="size=${DISK_GB},backing_store=${IMAGE}" \
+        --disk="./persistent.qcow2" \
         --network bridge=virbr0 "${IGNITION_DEVICE_ARG[@]}"
