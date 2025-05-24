@@ -42,6 +42,11 @@ storage:
           Environment=NEXTCLOUD_ADMIN_USER_FILE=/secrets/admin_user
           Environment=NEXTCLOUD_ADMIN_PASSWORD_FILE=/secrets/admin_password
           Environment=NEXTCLOUD_TRUSTED_DOMAINS=hello.local
+          Environment=OBJECTSTORE_S3_BUCKET=sludge-nextcloud
+          Environment=OBJECTSTORE_S3_HOST=nbg1.your-objectstorage.com
+          Environment=OBJECTSTORE_S3_REGION=eu-central
+          Environment=OBJECTSTORE_S3_KEY_FILE=/secrets/object_store_key
+          Environment=OBJECTSTORE_S3_SECRET_FILE=/secrets/object_store_secret
           Volume=/var/lib/data/nextcloud/secrets:/secrets:z,ro
           Volume=/var/lib/data/nextcloud/data:/var/www/html:z,rw
 
