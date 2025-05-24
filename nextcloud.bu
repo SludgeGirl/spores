@@ -38,21 +38,32 @@ storage:
           Environment=POSTGRES_USER=nextcloud
           Environment=POSTGRES_DB=nextcloud
           Environment=POSTGRES_PASSWORD=
+          Environment=NC_setup_create_db_user=false
           Environment=NEXTCLOUD_ADMIN_USER_FILE=/secrets/admin_user
           Environment=NEXTCLOUD_ADMIN_PASSWORD_FILE=/secrets/admin_password
           Environment=NEXTCLOUD_TRUSTED_DOMAINS=hello.local
-          Volume=/var/lib/data/secrets/nextcloud:/secrets:z,ro
+          Volume=/var/lib/data/nextcloud/secrets:/secrets:z,ro
+          Volume=/var/lib/data/nextcloud/data:/var/www/html:z,rw
 
           [Install]
           WantedBy=multi-user.target
+
+    - path: /etc/containers/systemd/postgres-nextcloud.volume
+      contents:
+        inline: |
+          [Volume]
+          Device=/var/lib/data/nextcloud/database
+          Driver=local
+          Options=bind
+          Type=none
 
     - path: /etc/containers/systemd/postgres-nextcloud.container
       contents:
         inline: |
           [Unit]
           Description=Postgres Nextcloud
-          Wants=network-online.target
-          After=network-online.target
+          Wants=network-online.target postgres-nextcloud.volume
+          After=network-online.target postgres-nextcloud.volume
 
           [Container]
           ContainerName=postgres-nextcloud
@@ -60,8 +71,9 @@ storage:
           Pod=nextcloud.pod
           Environment=POSTGRES_DB=nextcloud
           Environment=POSTGRES_USER=nextcloud
-          Environment=POSTGRES_PASSWORD=
           Environment=POSTGRES_HOST_AUTH_METHOD=trust
+          Environment=PGDATA=/var/lib/postgresql/data/pgdata
+          Volume=postgres-nextcloud.volume:/var/lib/postgresql/data:z,rw
 
           [Install]
           WantedBy=multi-user.target
