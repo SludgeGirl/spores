@@ -27,13 +27,41 @@ storage:
         inline: |
           [Unit]
           Description=Nextcloud
-          Wants=network-online.target
-          After=network-online.target
+          Wants=network-online.target postgres-nextcloud.service
+          After=network-online.target postgres-nextcloud.service var-lib-data.mount
 
           [Container]
           ContainerName=nextcloud
           Image=docker.io/nextcloud
           Pod=nextcloud.pod
+          Environment=POSTGRES_HOST=postgres-nextcloud
+          Environment=POSTGRES_USER=nextcloud
+          Environment=POSTGRES_DB=nextcloud
+          Environment=POSTGRES_PASSWORD=
+          Environment=NEXTCLOUD_ADMIN_USER_FILE=/secrets/admin_user
+          Environment=NEXTCLOUD_ADMIN_PASSWORD_FILE=/secrets/admin_password
+          Environment=NEXTCLOUD_TRUSTED_DOMAINS=hello.local
+          Volume=/var/lib/data/secrets/nextcloud:/secrets:z,ro
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - path: /etc/containers/systemd/postgres-nextcloud.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Postgres Nextcloud
+          Wants=network-online.target
+          After=network-online.target
+
+          [Container]
+          ContainerName=postgres-nextcloud
+          Image=docker.io/postgres
+          Pod=nextcloud.pod
+          Environment=POSTGRES_DB=nextcloud
+          Environment=POSTGRES_USER=nextcloud
+          Environment=POSTGRES_PASSWORD=
+          Environment=POSTGRES_HOST_AUTH_METHOD=trust
 
           [Install]
           WantedBy=multi-user.target
