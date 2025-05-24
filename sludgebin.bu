@@ -1,0 +1,27 @@
+variant: fcos
+version: 1.6.0
+storage:
+  files:
+    - path: /etc/containers/systemd/sludgebin.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Sludgebin
+          Wants=network-online.target
+          After=network-online.target
+
+          [Container]
+          ContainerName=sludgebin
+          Image=git.sludge.network/sludge/sludgebin:latest
+          Label=traefik.enable="true"
+          Label=traefik.http.routers.sludgebin.rule=Host'(`bin.sludge.network`)'
+          Label=traefik.http.middlewares.sludgebin-https-redirect.redirectscheme.scheme="https"
+          Label=traefik.http.routers.sludgebin.middlewares="sludgebin-https-redirect"
+          Label=traefik.http.routers.sludgebin-secure.entrypoints="https"
+          Label=traefik.http.routers.sludgebin-secure.rule=Host'(`bin.sludge.network`)'
+          Label=traefik.http.routers.sludgebin-secure.tls="true"
+          Label=traefik.http.routers.sludgebin-secure.tls.certresolver=lets-encrypt
+          Label=traefik.http.services.sludgebin.loadbalancer.server.port="80"
+
+          [Install]
+          WantedBy=multi-user.target
