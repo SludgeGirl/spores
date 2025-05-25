@@ -8,7 +8,7 @@ storage:
           [Unit]
           Description=Sludgebin
           Wants=network-online.target
-          After=network-online.target
+          After=network-online.target forgejo.service
 
           [Service]
           Restart=always

@@ -7,6 +7,7 @@ ignition:
       - local: nextcloud.ign
       - local: sludgebin.ign
       - local: opengist.ign
+      - local: forgejo.ign
 passwd:
   users:
     - name: root
