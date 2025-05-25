@@ -32,4 +32,5 @@ sudo virt-install --connect="qemu:///system" --name="${VM_NAME}" --vcpus="${VCPU
         --os-variant="fedora-coreos-$STREAM" --import --graphics=none \
         --disk="size=${DISK_GB},backing_store=${IMAGE}" \
         --disk="./persistent.qcow2" \
+        --wait 0 \
         --network bridge=virbr0 "${IGNITION_DEVICE_ARG[@]}"
