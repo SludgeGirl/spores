@@ -21,7 +21,7 @@ storage:
           Label=traefik.http.routers.sludgebin-secure.rule=Host'(`bin.sludge.network`)'
           Label=traefik.http.routers.sludgebin-secure.tls="true"
           Label=traefik.http.routers.sludgebin-secure.tls.certresolver=lets-encrypt
-          Label=traefik.http.services.sludgebin.loadbalancer.server.port="80"
+          Label=traefik.http.services.sludgebin.loadbalancer.server.port="8080"
 
           [Install]
           WantedBy=multi-user.target
