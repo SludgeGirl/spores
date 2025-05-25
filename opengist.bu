@@ -1,0 +1,65 @@
+variant: fcos
+version: 1.6.0
+storage:
+  files:
+    - path: /etc/containers/systemd/opengist.pod
+      contents:
+        inline: |
+          [Unit]
+          Description=Opengist Pod
+
+          [Pod]
+          PodName=opengist
+          Network=opengist.network
+
+    - path: /etc/containers/systemd/opengist.network
+      contents:
+        inline: |
+          [Unit]
+          Description=Opengist
+
+    - path: /etc/containers/systemd/opengist.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Opengist
+          Wants=network-online.target
+          After=network-online.target
+
+          [Container]
+          ContainerName=opengist
+          Image=ghcr.io/thomiceli/opengist:latest
+          Pod=opengist.pod
+          Environment=OG_GITEA_URL=https://git.sludge.network
+          EnvironmentFile=/var/lib/data/opengist/secrets/env
+          Volume=/var/lib/data/opengist/data:/opengist:z,rw
+          Volume=/var/lib/data/opengist/secrets:/secrets:z,ro
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - path: /etc/containers/systemd/anubis-opengist.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Anubis Opengist
+          Wants=network-online.target
+          After=network-online.target opengist.container
+
+          [Container]
+          ContainerName=anubis-opengist
+          Image=ghcr.io/techarohq/anubis
+          Pod=opengist.pod
+          Environment=TARGET=http://opengist:6157
+          Label=traefik.enable="true"
+          Label=traefik.http.routers.anubis-opengist.rule=Host'(`gist.sludge.network`)'
+          Label=traefik.http.middlewares.opengist-https-redirect.redirectscheme.scheme="https"
+          Label=traefik.http.routers.anubis-opengist.middlewares="opengist-https-redirect"
+          Label=traefik.http.routers.anubis-opengist-secure.entrypoints="https"
+          Label=traefik.http.routers.anubis-opengist-secure.rule=Host'(`gist.sludge.network`)'
+          Label=traefik.http.routers.anubis-opengist-secure.tls="true"
+          Label=traefik.http.routers.anubis-opengist-secure.tls.certresolver=lets-encrypt
+          Label=traefik.http.services.anubis-opengist.loadbalancer.server.port="8923"
+
+          [Install]
+          WantedBy=multi-user.target
