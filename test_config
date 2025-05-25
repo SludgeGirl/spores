@@ -1,13 +1,13 @@
 #!/bin/bash
 make clean
-make
+make test_config.ign
 
 STREAM="stable"
 
 #IMAGE_NAME=$(podman run --pull=always --rm -v "${HOME}/.local/share/libvirt/images/:/data" -w /data \
 #  quay.io/coreos/coreos-installer:release download -s $STREAM -p qemu -f qcow2.xz --decompress)
 IMAGE_NAME="fedora-coreos-42.20250427.3.0-qemu.x86_64.qcow2"
-IGNITION_CONFIG="$(pwd)/config.ign"
+IGNITION_CONFIG="$(pwd)/test_config.ign"
 IMAGE="${HOME}/.local/share/libvirt/images/${IMAGE_NAME}"
 VM_NAME="fcos-test-01"
 VCPUS="2"
