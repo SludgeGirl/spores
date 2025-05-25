@@ -26,6 +26,9 @@ storage:
           Wants=network-online.target postgres-nextcloud.service
           After=network-online.target postgres-nextcloud.service var-lib-data.mount
 
+          [Service]
+          Restart=always
+
           [Container]
           ContainerName=nextcloud
           Image=docker.io/nextcloud
@@ -66,6 +69,9 @@ storage:
           Wants=network-online.target postgres-nextcloud.volume
           After=network-online.target postgres-nextcloud.volume
 
+          [Service]
+          Restart=always
+
           [Container]
           ContainerName=postgres-nextcloud
           Image=docker.io/postgres
@@ -86,6 +92,9 @@ storage:
           Description=Anubis Nextcloud
           Wants=network-online.target
           After=network-online.target nextcloud.service
+
+          [Service]
+          Restart=always
 
           [Container]
           ContainerName=anubis-nextcloud
