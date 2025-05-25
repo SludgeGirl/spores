@@ -3,9 +3,10 @@ version: 1.6.0
 ignition:
   config:
     merge:
+      - local: network.ign
       - local: nextcloud.ign
       - local: sludgebin.ign
-      - local: network.ign
+      - local: opengist.ign
 passwd:
   users:
     - name: root
