@@ -85,7 +85,7 @@ storage:
           [Unit]
           Description=Anubis Nextcloud
           Wants=network-online.target
-          After=network-online.target
+          After=network-online.target nextcloud.service
 
           [Container]
           ContainerName=anubis-nextcloud
