@@ -1,0 +1,121 @@
+variant: fcos
+version: 1.6.0
+storage:
+  files:
+    - path: /etc/containers/systemd/forgejo.pod
+      contents:
+        inline: |
+          [Unit]
+          Description=forgejo Pod
+
+          [Pod]
+          PodName=forgejo
+          Network=forgejo.network
+          PublishPort=222:22
+
+    - path: /etc/containers/systemd/forgejo.network
+      contents:
+        inline: |
+          [Unit]
+          Description=forgejo
+
+    - path: /etc/containers/systemd/forgejo.container
+      contents:
+        inline: |
+          [Unit]
+          Description=forgejo
+          Wants=network-online.target postgres-forgejo.service
+          After=network-online.target postgres-forgejo.service var-lib-data.mount
+
+          [Service]
+          Restart=always
+
+          [Container]
+          ContainerName=forgejo
+          Image=codeberg.org/forgejo/forgejo:11
+          Pod=forgejo.pod
+          Environment=USER_UID=1000
+          Environment=USER_GID=1000
+          Environment=FORGEJO__database__DB_TYPE=postgres
+          Environment=FORGEJO__database__HOST=postgres-forgejo
+          Environment=FORGEJO__database__NAME=forgejo
+          Environment=FORGEJO__database__USER=forgejo
+          Environment=FORGEJO__database__PASSWD=
+          Environment=FORGEJO__service__REGISTER_EMAIL_CONFIRM=true
+          Environment=FORGEJO__service__DISABLE_REGISTRATION=true
+          Environment=FORGEJO__federation__ENABLED=true
+          Environment=FORGEJO__lfs__STORAGE_TYPE=minio
+          Environment=FORGEJO__lfs__MINIO_BASE_PATH=lfs/
+          Environment=FORGEJO__server__LFS_START_SERVER=true
+          EnvironmentFile=/var/lib/data/forgejo/secrets/s3
+          Environment=FORGEJO__server__ROOT_URL="https://git.sludge.network/"
+          Environment=FORGEJO__server__DOMAIN="localhost"
+          Environment=FORGEJO__server__SSH_PORT=222
+          Environment=FORGEJO__picture__ENABLE_FEDERATED_AVATAR=true
+          Volume=/var/lib/data/forgejo/secrets:/secrets:z,ro
+          Volume=/var/lib/data/forgejo/data:/data:z,rw
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - path: /etc/containers/systemd/postgres-forgejo.volume
+      contents:
+        inline: |
+          [Volume]
+          Device=/var/lib/data/forgejo/database
+          Driver=local
+          Options=bind
+          Type=none
+
+    - path: /etc/containers/systemd/postgres-forgejo.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Postgres forgejo
+          Wants=network-online.target postgres-forgejo.volume
+          After=network-online.target postgres-forgejo.volume
+
+          [Service]
+          Restart=always
+
+          [Container]
+          ContainerName=postgres-forgejo
+          Image=docker.io/postgres
+          Pod=forgejo.pod
+          Environment=POSTGRES_DB=forgejo
+          Environment=POSTGRES_USER=forgejo
+          Environment=POSTGRES_HOST_AUTH_METHOD=trust
+          Environment=PGDATA=/var/lib/postgresql/data/pgdata
+          Volume=postgres-forgejo.volume:/var/lib/postgresql/data:z,rw
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - path: /etc/containers/systemd/anubis-forgejo.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Anubis forgejo
+          Wants=network-online.target
+          After=network-online.target forgejo.service
+
+          [Service]
+          Restart=always
+
+          [Container]
+          ContainerName=anubis-forgejo
+          Image=ghcr.io/techarohq/anubis
+          Pod=forgejo.pod
+          Environment=TARGET=http://forgejo:3000
+          Label=traefik.enable="true"
+          Label=traefik.http.routers.anubis-forgejo.rule=Host'(`git.sludge.network`)'
+          Label=traefik.http.middlewares.anubis-forgejo-https-redirect.redirectscheme.scheme="https"
+          Label=traefik.http.routers.anubis-forgejo.middlewares="anubis-forgejo-https-redirect"
+          Label=traefik.http.routers.anubis-forgejo-secure.entrypoints="https"
+          Label=traefik.http.routers.anubis-forgejo-secure.rule=Host'(`git.sludge.network`)'
+          Label=traefik.http.routers.anubis-forgejo-secure.tls="true"
+          Label=traefik.http.routers.anubis-forgejo-secure.tls.certresolver=lets-encrypt
+          Label=traefik.http.services.anubis-forgejo.loadbalancer.server.port="8923"
+
+          [Install]
+          WantedBy=multi-user.target

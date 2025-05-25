@@ -12,9 +12,12 @@ nextcloud.ign:
 sludgebin.ign:
 	butane ./sludgebin.bu > sludgebin.ign
 
-config.ign: nextcloud.ign sludgebin.ign network.ign opengist.ign
+forgejo.ign:
+	butane ./forgejo.bu > forgejo.ign
+
+config.ign: nextcloud.ign sludgebin.ign network.ign opengist.ign forgejo.ign
 	butane -pd . ./config.bu > config.ign
 
 clean:
 	rm -f config.ign nextcloud.ign sludgebin.ign network.ign \
-		opengist.ign
+		opengist.ign forgejo.ign
