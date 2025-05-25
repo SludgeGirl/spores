@@ -48,6 +48,7 @@ storage:
           ContainerName=traefik
           Image=docker.io/traefik
           Volume=/run/podman/podman.sock:/var/run/docker.sock:z
+          Volume=/var/lib/data/traefik/acme.json:/acme.json:z,rw
           PublishPort=8080:8080
           PublishPort=80:80
           PublishPort=443:443
