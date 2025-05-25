@@ -37,7 +37,7 @@ storage:
           Environment=NC_setup_create_db_user=false
           Environment=NEXTCLOUD_ADMIN_USER_FILE=/secrets/admin_user
           Environment=NEXTCLOUD_ADMIN_PASSWORD_FILE=/secrets/admin_password
-          Environment=NEXTCLOUD_TRUSTED_DOMAINS=hello.local
+          Environment=NEXTCLOUD_TRUSTED_DOMAINS=nextcloud.sludge.network
           Environment=OBJECTSTORE_S3_BUCKET=sludge-nextcloud
           Environment=OBJECTSTORE_S3_HOST=nbg1.your-objectstorage.com
           Environment=OBJECTSTORE_S3_REGION=eu-central
@@ -93,11 +93,11 @@ storage:
           Pod=nextcloud.pod
           Environment=TARGET=http://nextcloud
           Label=traefik.enable="true"
-          Label=traefik.http.routers.anubis-nextcloud.rule=Host'(`hello.local`)'
+          Label=traefik.http.routers.anubis-nextcloud.rule=Host'(`nextcloud.sludge.network`)'
           Label=traefik.http.middlewares.anubis-nextcloud-https-redirect.redirectscheme.scheme="https"
           Label=traefik.http.routers.anubis-nextcloud.middlewares="anubis-nextcloud-https-redirect"
           Label=traefik.http.routers.anubis-nextcloud-secure.entrypoints="https"
-          Label=traefik.http.routers.anubis-nextcloud-secure.rule=Host'(`hello.local`)'
+          Label=traefik.http.routers.anubis-nextcloud-secure.rule=Host'(`nextcloud.sludge.network`)'
           Label=traefik.http.routers.anubis-nextcloud-secure.tls="true"
           Label=traefik.http.routers.anubis-nextcloud-secure.tls.certresolver=lets-encrypt
           Label=traefik.http.services.anubis-nextcloud.loadbalancer.server.port="8923"
