@@ -18,10 +18,6 @@ storage:
           [Unit]
           Description=Nextcloud
 
-          [Network]
-          Subnet=192.168.30.0/24
-          Gateway=192.168.30.1
-
     - path: /etc/containers/systemd/nextcloud.container
       contents:
         inline: |
