@@ -56,5 +56,6 @@ hcloud server create \
     --image "$IMAGE_ID" \
     --ssh-key "$SSH_KEY_ID" \
     --primary-ipv6 "$PRIMARY_IP_ID" \
+    --primary-ipv4 "$PRIMARY_IP4_ID" \
     --volume "$PERSISTANT_VOLUME_ID" \
     --user-data-from-file "$IGNITION_CONFIG"
