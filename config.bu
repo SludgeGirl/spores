@@ -20,6 +20,9 @@ passwd:
 
 systemd:
   units:
+    - name: docker.service
+      mask: true
+
     - name: var-lib-data.mount
       enabled: true
       contents: |
