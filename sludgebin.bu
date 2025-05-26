@@ -12,6 +12,7 @@ storage:
 
           [Service]
           Restart=always
+          RestartSec=60
 
           [Container]
           ContainerName=sludgebin
