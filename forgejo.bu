@@ -40,11 +40,11 @@ storage:
           Environment=FORGEJO__database__HOST=postgres-forgejo
           Environment=FORGEJO__database__NAME=forgejo
           Environment=FORGEJO__database__USER=forgejo
-          Environment=FORGEJO__database__PASSWD=
+          Environment=FORGEJO__database__PASSWD=forgejo
           Environment=FORGEJO__service__REGISTER_EMAIL_CONFIRM=true
           Environment=FORGEJO__service__DISABLE_REGISTRATION=true
           Environment=FORGEJO__federation__ENABLED=true
-          Environment=FORGEJO__lfs__STORAGE_TYPE=minio
+          Environment=FORGEJO__storage__STORAGE_TYPE=minio
           Environment=FORGEJO__lfs__MINIO_BASE_PATH=lfs/
           Environment=FORGEJO__server__LFS_START_SERVER=true
           EnvironmentFile=/var/lib/data/forgejo/secrets/s3
@@ -84,6 +84,7 @@ storage:
           Pod=forgejo.pod
           Environment=POSTGRES_DB=forgejo
           Environment=POSTGRES_USER=forgejo
+          Environment=POSTGRES_PASSWORD=forgejo
           Environment=POSTGRES_HOST_AUTH_METHOD=trust
           Environment=PGDATA=/var/lib/postgresql/data/pgdata
           Volume=postgres-forgejo.volume:/var/lib/postgresql/data:z,rw
