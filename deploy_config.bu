@@ -4,4 +4,4 @@ ignition:
   config:
     merge:
       - local: config.ign
-      - local: test_network.ign
+      - local: deploy_network.ign

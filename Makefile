@@ -1,8 +1,5 @@
 all: config.ign
 
-network.ign:
-	butane ./network.bu > network.ign
-
 opengist.ign:
 	butane ./opengist.bu > opengist.ign
 
@@ -18,9 +15,19 @@ forgejo.ign:
 config.ign: nextcloud.ign sludgebin.ign opengist.ign forgejo.ign
 	butane -pd . ./config.bu > config.ign
 
-test_config.ign: config.ign network.ign
+deploy_network.ign:
+	butane ./deploy_network.bu > deploy_network.ign
+
+deploy_config.ign: config.ign deploy_network.ign
+	butane -pd . ./deploy_config.bu > deploy_config.ign
+
+test_network.ign:
+	butane ./test_network.bu > test_network.ign
+
+test_config.ign: config.ign test_network.ign
 	butane -pd . ./test_config.bu > test_config.ign
 
 clean:
-	rm -f config.ign nextcloud.ign sludgebin.ign network.ign \
-		opengist.ign forgejo.ign test_config.ign
+	rm -f config.ign nextcloud.ign sludgebin.ign \
+		opengist.ign forgejo.ign test_config.ign \
+		deploy_network.ign test_network.ign
