@@ -46,6 +46,7 @@ storage:
           Environment=OBJECTSTORE_S3_REGION=eu-central
           Environment=OBJECTSTORE_S3_KEY_FILE=/secrets/object_store_key
           Environment=OBJECTSTORE_S3_SECRET_FILE=/secrets/object_store_secret
+          Environment=OVERWRITEPROTOCOL=https
           Volume=/var/lib/data/nextcloud/secrets:/secrets:z,ro
           Volume=/var/lib/data/nextcloud/data:/var/www/html:z,rw
           Label=traefik.enable="true"
