@@ -1,0 +1,60 @@
+#!/bin/bash
+make clean
+make deploy_config.ign
+IGNITION_CONFIG="./deploy_config.ign"
+
+source .env
+
+export HCLOUD_TOKEN="$HCLOUD_TOKEN"
+
+STREAM="stable"     # or "testing", "next"
+ARCH="x86"          # or "arm"
+
+if [ $# -eq 1 ]; then
+  echo "Creating core-os snapshot from: $1"
+  podman run --rm -e HCLOUD_TOKEN="$HCLOUD_TOKEN" ghcr.io/apricote/hcloud-upload-image:latest upload \
+      --image-url "$1" \
+      --architecture "$ARCH" \
+      --compression xz \
+      --labels os=fedora-coreos,channel="$STREAM" \
+      --description "Fedora CoreOS ($STREAM, $ARCH)"
+fi;
+
+if [ $? -gt 0 ]; then
+  echo "Failed to upload image"
+  exit 1
+fi;
+
+IMAGE_ID="$(hcloud image list \
+    --type=snapshot \
+    --selector=os=fedora-coreos \
+    --output json \
+    | jq -r '.[0].id')"
+OLD_SERVER_ID="$(hcloud server list \
+    --output json \
+    | jq -r '.[0].id')"
+
+if [ -n $OLD_SERVER_ID ]; then
+  echo "Shutting down old server: $OLD_SERVER_ID"
+  hcloud server shutdown \
+    --wait \
+    --wait-timeout 300s \
+    "$OLD_SERVER_ID"
+
+  hcloud volume detach "$PERSISTANT_VOLUME_ID"
+
+  echo "Deleting old server"
+  hcloud server delete "$OLD_SERVER_ID"
+fi;
+
+SERVER_NAME="$SERVER_NAME-$(git rev-parse --short HEAD)"
+echo "Creating replacement server: $SERVER_NAME"
+hcloud server create \
+    --name "$SERVER_NAME" \
+    --type "$SERVER_TYPE" \
+    --datacenter "$DATACENTER" \
+    --image "$IMAGE_ID" \
+    --ssh-key "$SSH_KEY_ID" \
+    --primary-ipv6 "$PRIMARY_IP_ID" \
+    --volume "$PERSISTANT_VOLUME_ID" \
+    --user-data-from-file "$IGNITION_CONFIG"
