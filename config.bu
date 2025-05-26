@@ -55,7 +55,7 @@ storage:
           PublishPort=8080:8080
           PublishPort=80:80
           PublishPort=443:443
-          Exec=--api.dashboard=true \
+          Exec=--api.dashboard=false \
                 --api.insecure=true \
                 --certificatesresolvers.lets-encrypt.acme.email="alicembrooks@protonmail.com" \
                 --certificatesresolvers.lets-encrypt.acme.storage=/acme.json \
