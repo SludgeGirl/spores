@@ -48,6 +48,15 @@ storage:
           Environment=OBJECTSTORE_S3_SECRET_FILE=/secrets/object_store_secret
           Volume=/var/lib/data/nextcloud/secrets:/secrets:z,ro
           Volume=/var/lib/data/nextcloud/data:/var/www/html:z,rw
+          Label=traefik.enable="true"
+          Label=traefik.http.routers.anubis-nextcloud.rule=Host'(`nextcloud.sludge.network`)'
+          Label=traefik.http.middlewares.anubis-nextcloud-https-redirect.redirectscheme.scheme="https"
+          Label=traefik.http.routers.anubis-nextcloud.middlewares="anubis-nextcloud-https-redirect"
+          Label=traefik.http.routers.anubis-nextcloud-secure.entrypoints="https"
+          Label=traefik.http.routers.anubis-nextcloud-secure.rule=Host'(`nextcloud.sludge.network`)'
+          Label=traefik.http.routers.anubis-nextcloud-secure.tls="true"
+          Label=traefik.http.routers.anubis-nextcloud-secure.tls.certresolver=lets-encrypt
+          Label=traefik.http.services.anubis-nextcloud.loadbalancer.server.port="80"
 
           [Install]
           WantedBy=multi-user.target
@@ -81,35 +90,6 @@ storage:
           Environment=POSTGRES_HOST_AUTH_METHOD=trust
           Environment=PGDATA=/var/lib/postgresql/data/pgdata
           Volume=postgres-nextcloud.volume:/var/lib/postgresql/data:z,rw
-
-          [Install]
-          WantedBy=multi-user.target
-
-    - path: /etc/containers/systemd/anubis-nextcloud.container
-      contents:
-        inline: |
-          [Unit]
-          Description=Anubis Nextcloud
-          Wants=network-online.target
-          After=network-online.target nextcloud.service
-
-          [Service]
-          Restart=always
-
-          [Container]
-          ContainerName=anubis-nextcloud
-          Image=ghcr.io/techarohq/anubis
-          Pod=nextcloud.pod
-          Environment=TARGET=http://nextcloud
-          Label=traefik.enable="true"
-          Label=traefik.http.routers.anubis-nextcloud.rule=Host'(`nextcloud.sludge.network`)'
-          Label=traefik.http.middlewares.anubis-nextcloud-https-redirect.redirectscheme.scheme="https"
-          Label=traefik.http.routers.anubis-nextcloud.middlewares="anubis-nextcloud-https-redirect"
-          Label=traefik.http.routers.anubis-nextcloud-secure.entrypoints="https"
-          Label=traefik.http.routers.anubis-nextcloud-secure.rule=Host'(`nextcloud.sludge.network`)'
-          Label=traefik.http.routers.anubis-nextcloud-secure.tls="true"
-          Label=traefik.http.routers.anubis-nextcloud-secure.tls.certresolver=lets-encrypt
-          Label=traefik.http.services.anubis-nextcloud.loadbalancer.server.port="8923"
 
           [Install]
           WantedBy=multi-user.target
