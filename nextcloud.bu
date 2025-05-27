@@ -1,5 +1,19 @@
 variant: fcos
 version: 1.6.0
+systemd:
+  units:
+    - name: nextcloud-cron.timer
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Timer for Nextcloud Cron Runner
+
+        [Timer]
+        OnCalendar=*:0/5
+
+        [Install]
+        WantedBy=timers.target
+
 storage:
   files:
     - path: /etc/containers/systemd/nextcloud.pod
@@ -17,6 +31,22 @@ storage:
         inline: |
           [Unit]
           Description=Nextcloud
+
+    - path: /etc/containers/systemd/nextcloud-cron.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Nextcloud Cron Runner
+          Wants=network-online.target postgres-nextcloud.service
+          After=network-online.target postgres-nextcloud.service var-lib-data.mount
+
+          [Container]
+          ContainerName=nextcloud-cron
+          Image=docker.io/nextcloud
+          User=33
+          Exec=/usr/local/bin/php /var/www/html/cron.php --verbose
+          Pod=nextcloud.pod
+          Volume=/var/lib/data/nextcloud/data:/var/www/html:z,rw
 
     - path: /etc/containers/systemd/nextcloud.container
       contents:
