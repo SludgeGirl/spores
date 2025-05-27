@@ -10,7 +10,6 @@ ignition:
 passwd:
   users:
     - name: root
-      password_hash: $y$j9T$Mqmn9CreFvRKSKUUVJESz/$KtgqOSe.Jow6zaofYjXhK8/aGvssQudxZMBdiYUfOl5
       ssh_authorized_keys:
         - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILbw+AVDQKQn8qiYNFgzN1CNHNnv4fnmZmbeXbk7a013 sludge@apothecium
 
