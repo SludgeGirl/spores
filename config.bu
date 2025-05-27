@@ -39,6 +39,19 @@ systemd:
 
 storage:
   files:
+    - path: /etc/containers/containers.conf
+      contents:
+        inline: |
+          [network]
+          network_backend = "netavark"
+
+    - path: /etc/containers/systemd/ipv6.network
+      contents:
+        inline: |
+          [Network]
+          Label=ipv6
+          IPv6=true
+
     - path: /etc/containers/systemd/traefik.container
       contents:
         inline: |
@@ -66,6 +79,8 @@ storage:
                 --entrypoints.https.address=":443" \
                 --providers.docker=true
           SecurityLabelType=container_runtime_t
+          Network=ipv6.network
+          Network=podman
 
           [Install]
           WantedBy=multi-user.target
