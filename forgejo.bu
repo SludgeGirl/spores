@@ -81,7 +81,7 @@ storage:
 
           [Container]
           ContainerName=postgres-forgejo
-          Image=docker.io/postgres
+          Image=mirror.gcr.io/postgres:17
           Pod=forgejo.pod
           Environment=POSTGRES_DB=forgejo
           Environment=POSTGRES_USER=forgejo
