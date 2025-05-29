@@ -72,7 +72,7 @@ storage:
 
           [Container]
           ContainerName=traefik
-          Image=docker.io/traefik
+          Image=mirror.gcr.io/traefik
           Volume=/run/podman/podman.sock:/var/run/docker.sock:z
           Volume=/var/lib/data/traefik/acme.json:/acme.json:z,rw
           PublishPort=8080:8080
