@@ -17,6 +17,7 @@ storage:
           [Container]
           ContainerName=sludgebin
           Image=git.sludge.network/sludge/sludgebin:latest
+          HealthCmd=curl -sSf 'http://localhost:8080/'
           Label=traefik.enable="true"
           Label=traefik.http.routers.sludgebin.rule=Host'(`bin.sludge.network`)'
           Label=traefik.http.middlewares.sludgebin-https-redirect.redirectscheme.scheme="https"

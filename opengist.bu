@@ -33,6 +33,7 @@ storage:
           ContainerName=opengist
           Image=ghcr.io/thomiceli/opengist:latest
           Pod=opengist.pod
+          HealthCmd=curl -sSf 'http://localhost:6157/healthcheck'
           Environment=OG_GITEA_URL=https://git.sludge.network
           EnvironmentFile=/var/lib/data/opengist/secrets/env
           Volume=/var/lib/data/opengist/data:/opengist:z,rw

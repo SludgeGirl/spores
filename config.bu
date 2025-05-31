@@ -81,6 +81,8 @@ storage:
           Exec=--api.dashboard=false \
                 --log.level=INFO \
                 --accesslog=true \
+                --ping=true \
+                --api=true \
                 --certificatesresolvers.lets-encrypt.acme.email="alicembrooks@protonmail.com" \
                 --certificatesresolvers.lets-encrypt.acme.storage=/acme.json \
                 --certificatesresolvers.lets-encrypt.acme.tlschallenge=true \
@@ -93,6 +95,7 @@ storage:
           SecurityLabelType=container_runtime_t
           Network=ipv6.network
           Network=podman
+          HealthCmd=traefik healthcheck --ping
 
           [Install]
           WantedBy=multi-user.target

@@ -63,6 +63,7 @@ storage:
           ContainerName=nextcloud
           Image=mirror.gcr.io/nextcloud:31-apache
           Pod=nextcloud.pod
+          HealthCmd=curl -sSf 'http://localhost/status.php' | grep '"installed":true' | grep '"maintenance":false' | grep '"needsDbUpgrade":false' || exit 1
           Environment=POSTGRES_HOST=postgres-nextcloud
           Environment=POSTGRES_USER=nextcloud
           Environment=POSTGRES_DB=nextcloud
@@ -117,6 +118,7 @@ storage:
           ContainerName=postgres-nextcloud
           Image=mirror.gcr.io/postgres:17
           Pod=nextcloud.pod
+          HealthCmd=pg_isready -d nextcloud
           Environment=POSTGRES_DB=nextcloud
           Environment=POSTGRES_USER=nextcloud
           Environment=POSTGRES_HOST_AUTH_METHOD=trust
@@ -141,6 +143,7 @@ storage:
           ContainerName=valkey-nextcloud
           Image=mirror.gcr.io/valkey/valkey
           Pod=nextcloud.pod
+          HealthCmd=redis-cli --raw ping
 
           [Install]
           WantedBy=multi-user.target
