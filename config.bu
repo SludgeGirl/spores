@@ -90,7 +90,7 @@ storage:
                 --entrypoints.http.http.redirections.entryPoint.to=https \
                 --entrypoints.http.http.redirections.entryPoint.scheme=https \
                 --entrypoints.https.address=":443" \
-                --entryPoints.https.transport.respondingTimeouts.readTimeout=120 \
+                --entryPoints.https.transport.respondingTimeouts.readTimeout=0 \
                 --providers.docker=true
           SecurityLabelType=container_runtime_t
           Network=ipv6.network
