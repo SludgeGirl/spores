@@ -38,6 +38,12 @@ systemd:
 
 storage:
   files:
+    - path: /etc/hostname
+      overwrite: true
+      contents:
+        inline: |
+          mycelium
+
     - path: /etc/containers/containers.conf
       contents:
         inline: |
