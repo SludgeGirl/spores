@@ -42,7 +42,7 @@ storage:
 
           [Container]
           ContainerName=nextcloud-cron
-          Image=mirror.gcr.io/nextcloud:31-fpm-alpine
+          Image=mirror.gcr.io/nextcloud:production-fpm-alpine
           User=33
           Exec=/usr/local/bin/php /var/www/html/cron.php --verbose
           Pod=nextcloud.pod
@@ -61,7 +61,7 @@ storage:
 
           [Container]
           ContainerName=nextcloud
-          Image=mirror.gcr.io/nextcloud:31-apache
+          Image=mirror.gcr.io/nextcloud:production-apache
           Pod=nextcloud.pod
           HealthCmd=curl -sSf 'http://localhost/status.php' | grep '"installed":true' | grep '"maintenance":false' | grep '"needsDbUpgrade":false' || exit 1
           Environment=POSTGRES_HOST=postgres-nextcloud
