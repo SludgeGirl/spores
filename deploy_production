@@ -31,6 +31,7 @@ IMAGE_ID="$(hcloud image list \
     --output json \
     | jq -r '.[0].id')"
 OLD_SERVER_ID="$(hcloud server list \
+    --selector=name=$SERVER_NAME \
     --output json \
     | jq -r '.[0].id')"
 
@@ -57,4 +58,5 @@ hcloud server create \
     --primary-ipv6 "$PRIMARY_IP_ID" \
     --primary-ipv4 "$PRIMARY_IP4_ID" \
     --volume "$PERSISTANT_VOLUME_ID" \
+    --label name=$SERVER_NAME \
     --user-data-from-file "$IGNITION_CONFIG"

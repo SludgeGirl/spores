@@ -54,6 +54,7 @@ storage:
           Environment=FORGEJO__server__DOMAIN="localhost"
           Environment=FORGEJO__server__SSH_PORT=222
           Environment=FORGEJO__picture__ENABLE_FEDERATED_AVATAR=true
+          Environment=FORGEJO__actions__DEFAULT_ACTIONS_URL=https://github.com
           Volume=/var/lib/data/forgejo/secrets:/secrets:z,ro
           Volume=/var/lib/data/forgejo/data:/data:z,rw
 

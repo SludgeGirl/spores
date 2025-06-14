@@ -1,0 +1,54 @@
+variant: fcos
+version: 1.6.0
+
+passwd:
+  users:
+    - name: root
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILbw+AVDQKQn8qiYNFgzN1CNHNnv4fnmZmbeXbk7a013 sludge@apothecium
+
+storage:
+  files:
+    - path: /etc/containers/containers.conf
+      contents:
+        inline: |
+          [network]
+          network_backend = "netavark"
+
+    - path: /etc/containers/systemd/ipv6.network
+      contents:
+        inline: |
+          [Network]
+          Label=ipv6
+          IPv6=true
+
+    - path: /etc/zincati/config.d/55-update-window.toml
+      contents:
+        inline: |
+          [updates]
+          strategy = "periodic"
+
+          [[updates.periodic.window]]
+          days = [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ]
+          start_time = "01:00"
+          length_minutes = 60
+
+    - path: /etc/containers/systemd/runner.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Runner
+          Wants=network-online.target docker.socket
+          After=network-online.target docker.socket
+
+          [Container]
+          ContainerName=runner
+          Image=data.forgejo.org/forgejo/runner:6
+          Volume=/run/docker.sock:/var/run/docker.sock:z
+          Exec=sh -c "forgejo-runner create-runner-file --instance https://git.sludge.network --secret FORGEJO_RUNNER_SECRET && sed -i 's/labels\": null/labels\": [\"ubuntu-latest:docker:\\/\\/node:20-bookworm\"]/g' .runner && cat .runner && forgejo-runner daemon"
+          User=0
+          Network=ipv6.network
+          SecurityLabelType=container_runtime_t
+
+          [Install]
+          WantedBy=multi-user.target
