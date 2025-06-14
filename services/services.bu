@@ -8,6 +8,7 @@ ignition:
       - local: opengist.ign
       - local: forgejo.ign
       - local: vaultwarden.ign
+
 passwd:
   users:
     - name: root

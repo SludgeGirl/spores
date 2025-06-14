@@ -1,37 +1,34 @@
-all: config.ign
+all: services.ign
 
 opengist.ign:
-	butane ./opengist.bu > opengist.ign
+	butane services/opengist.bu > services/opengist.ign
 
 nextcloud.ign:
-	butane ./nextcloud.bu > nextcloud.ign
+	butane services/nextcloud.bu > services/nextcloud.ign
 
 sludgebin.ign:
-	butane ./sludgebin.bu > sludgebin.ign
+	butane services/sludgebin.bu > services/sludgebin.ign
 
 forgejo.ign:
-	butane ./forgejo.bu > forgejo.ign
+	butane services/forgejo.bu > services/forgejo.ign
 
 vaultwarden.ign:
-	butane ./vaultwarden.bu > vaultwarden.ign
+	butane services/vaultwarden.bu > services/vaultwarden.ign
 
-config.ign: nextcloud.ign sludgebin.ign opengist.ign forgejo.ign vaultwarden.ign
-	butane -pd . ./config.bu > config.ign
+services.ign: opengist.ign nextcloud.ign sludgebin.ign forgejo.ign vaultwarden.ign
+	butane -pd services/ services/services.bu > services/services.ign
 
-deploy_network.ign:
-	butane ./deploy_network.bu > deploy_network.ign
+production_network.ign:
+	butane production_network.bu > production_network.ign
 
-deploy_config.ign: config.ign deploy_network.ign
-	butane -pd . ./deploy_config.bu > deploy_config.ign
+production.ign: services.ign production_network.ign
+	butane -pd . production.bu > production.ign
 
 test_network.ign:
-	butane ./test_network.bu > test_network.ign
+	butane test_network.bu > test_network.ign
 
-test_config.ign: config.ign test_network.ign
-	butane -pd . ./test_config.bu > test_config.ign
+test.ign: services.ign test_network.ign
+	butane -pd . test.bu > test.ign
 
 clean:
-	rm -f config.ign nextcloud.ign sludgebin.ign \
-		opengist.ign forgejo.ign test_config.ign \
-		vaultwarden.ign \
-		deploy_network.ign test_network.ign
+	rm -f *.ign **/*.ign
