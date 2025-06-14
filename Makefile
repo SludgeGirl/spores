@@ -12,7 +12,10 @@ sludgebin.ign:
 forgejo.ign:
 	butane ./forgejo.bu > forgejo.ign
 
-config.ign: nextcloud.ign sludgebin.ign opengist.ign forgejo.ign
+vaultwarden.ign:
+	butane ./vaultwarden.bu > vaultwarden.ign
+
+config.ign: nextcloud.ign sludgebin.ign opengist.ign forgejo.ign vaultwarden.ign
 	butane -pd . ./config.bu > config.ign
 
 deploy_network.ign:
@@ -30,4 +33,5 @@ test_config.ign: config.ign test_network.ign
 clean:
 	rm -f config.ign nextcloud.ign sludgebin.ign \
 		opengist.ign forgejo.ign test_config.ign \
+		vaultwarden.ign \
 		deploy_network.ign test_network.ign
