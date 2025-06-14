@@ -47,7 +47,6 @@ if [ -n $OLD_SERVER_ID ]; then
   hcloud server delete "$OLD_SERVER_ID"
 fi;
 
-SERVER_NAME="$SERVER_NAME-$(git rev-parse --short HEAD)"
 echo "Creating replacement server: $SERVER_NAME"
 hcloud server create \
     --name "$SERVER_NAME" \
