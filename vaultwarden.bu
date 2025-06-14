@@ -34,7 +34,7 @@ storage:
           ContainerName=vaultwarden
           Image=mirror.gcr.io/vaultwarden/server:latest
           Pod=vaultwarden.pod
-          HealthCmd=curl -sSf 'http://localhost:80/healthcheck'
+          HealthCmd=curl -sSf 'http://localhost:80/'
           Volume=/var/lib/data/vaultwarden:/data:z,rw
 
           [Install]
