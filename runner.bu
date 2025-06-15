@@ -51,7 +51,7 @@ storage:
 
           [Container]
           ContainerName=docker-in-docker
-          Image=docker:dind
+          Image=mirror.gcr.io/docker:dind
           Network=ipv6.network
           PodmanArgs=--privileged
           Environment=DOCKER_TLS_CERTDIR=
