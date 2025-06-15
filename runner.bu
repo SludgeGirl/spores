@@ -53,6 +53,7 @@ storage:
           PodmanArgs=--privileged
           Environment=DOCKER_TLS_CERTDIR=
           Environment=DOCKER_HOST=docker-in-docker
+          AutoUpdate=registry
 
     - path: /etc/containers/systemd/runner.container
       contents:
@@ -78,6 +79,7 @@ storage:
                 forgejo-runner --config config.yml daemon"
           Environment=DOCKER_HOST=tcp://docker-in-docker:2375
           Network=ipv6.network
+          AutoUpdate=registry
 
           [Install]
           WantedBy=multi-user.target

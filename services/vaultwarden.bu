@@ -36,6 +36,7 @@ storage:
           Pod=vaultwarden.pod
           HealthCmd=curl -sSf 'http://localhost:80/'
           Volume=/var/lib/data/vaultwarden:/data:z,rw
+          AutoUpdate=registry
 
           [Install]
           WantedBy=multi-user.target
@@ -65,6 +66,7 @@ storage:
           Label=traefik.http.routers.anubis-vaultwarden-secure.tls="true"
           Label=traefik.http.routers.anubis-vaultwarden-secure.tls.certresolver=lets-encrypt
           Label=traefik.http.services.anubis-vaultwarden.loadbalancer.server.port="8923"
+          AutoUpdate=registry
 
           [Install]
           WantedBy=multi-user.target

@@ -104,6 +104,7 @@ storage:
           Network=ipv6.network
           Network=podman
           HealthCmd=traefik healthcheck --ping
+          AutoUpdate=registry
 
           [Install]
           WantedBy=multi-user.target

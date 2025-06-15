@@ -47,6 +47,7 @@ storage:
           Exec=/usr/local/bin/php /var/www/html/cron.php --verbose
           Pod=nextcloud.pod
           Volume=/var/lib/data/nextcloud/data:/var/www/html:z,rw
+          AutoUpdate=registry
 
     - path: /etc/containers/systemd/nextcloud.container
       contents:
@@ -90,6 +91,7 @@ storage:
           Label=traefik.http.routers.anubis-nextcloud-secure.tls="true"
           Label=traefik.http.routers.anubis-nextcloud-secure.tls.certresolver=lets-encrypt
           Label=traefik.http.services.anubis-nextcloud.loadbalancer.server.port="80"
+          AutoUpdate=registry
 
           [Install]
           WantedBy=multi-user.target
@@ -124,6 +126,7 @@ storage:
           Environment=POSTGRES_HOST_AUTH_METHOD=trust
           Environment=PGDATA=/var/lib/postgresql/data/pgdata
           Volume=postgres-nextcloud.volume:/var/lib/postgresql/data:z,rw
+          AutoUpdate=registry
 
           [Install]
           WantedBy=multi-user.target
@@ -144,6 +147,7 @@ storage:
           Image=mirror.gcr.io/valkey/valkey
           Pod=nextcloud.pod
           HealthCmd=redis-cli --raw ping
+          AutoUpdate=registry
 
           [Install]
           WantedBy=multi-user.target

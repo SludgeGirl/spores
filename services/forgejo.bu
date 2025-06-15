@@ -58,6 +58,7 @@ storage:
           Volume=/var/lib/data/forgejo/secrets:/secrets:z,ro
           Volume=/var/lib/data/forgejo/data:/data:z,rw
           PodmanArgs=--cpus=1 --memory=500m
+          AutoUpdate=registry
 
           [Install]
           WantedBy=multi-user.target
@@ -93,6 +94,7 @@ storage:
           Environment=POSTGRES_HOST_AUTH_METHOD=trust
           Environment=PGDATA=/var/lib/postgresql/data/pgdata
           Volume=postgres-forgejo.volume:/var/lib/postgresql/data:z,rw
+          AutoUpdate=registry
 
           [Install]
           WantedBy=multi-user.target
@@ -122,6 +124,7 @@ storage:
           Label=traefik.http.routers.anubis-forgejo-secure.tls="true"
           Label=traefik.http.routers.anubis-forgejo-secure.tls.certresolver=lets-encrypt
           Label=traefik.http.services.anubis-forgejo.loadbalancer.server.port="8923"
+          AutoUpdate=registry
 
           [Install]
           WantedBy=multi-user.target
