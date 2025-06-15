@@ -24,6 +24,9 @@ systemd:
     - name: docker.service
       mask: true
 
+    - name: podman-auto-update.timer
+      enabled: true
+
     - name: var-lib-data.mount
       enabled: true
       contents: |
