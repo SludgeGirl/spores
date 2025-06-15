@@ -38,6 +38,7 @@ storage:
           EnvironmentFile=/var/lib/data/opengist/secrets/env
           Volume=/var/lib/data/opengist/data:/opengist:z,rw
           Volume=/var/lib/data/opengist/secrets:/secrets:z,ro
+          AutoUpdate=registry
 
           [Install]
           WantedBy=multi-user.target
@@ -67,6 +68,7 @@ storage:
           Label=traefik.http.routers.anubis-opengist-secure.tls="true"
           Label=traefik.http.routers.anubis-opengist-secure.tls.certresolver=lets-encrypt
           Label=traefik.http.services.anubis-opengist.loadbalancer.server.port="8923"
+          AutoUpdate=registry
 
           [Install]
           WantedBy=multi-user.target
