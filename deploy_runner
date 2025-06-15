@@ -39,5 +39,6 @@ hcloud server create \
     --type "cx22" \
     --datacenter "$DATACENTER" \
     --image "$IMAGE_ID" \
+    --ssh-key "$SSH_KEY_ID" \
     --label name=$SERVER_NAME \
     --user-data-from-file "$IGNITION_CONFIG"
