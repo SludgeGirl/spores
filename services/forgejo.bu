@@ -50,6 +50,7 @@ storage:
           Environment=FORGEJO__lfs__MINIO_BASE_PATH=lfs/
           Environment=FORGEJO__server__LFS_START_SERVER=true
           EnvironmentFile=/var/lib/data/forgejo/secrets/s3
+          EnvironmentFile=/var/lib/data/forgejo/secrets/mailer
           Environment=FORGEJO__server__ROOT_URL="https://git.sludge.network/"
           Environment=FORGEJO__server__DOMAIN="localhost"
           Environment=FORGEJO__server__SSH_PORT=222
