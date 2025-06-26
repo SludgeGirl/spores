@@ -1,6 +1,11 @@
 variant: fcos
 version: 1.6.0
 
+ignition:
+  config:
+    merge:
+      - local: services/renovate.ign
+
 passwd:
   users:
     - name: root
