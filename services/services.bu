@@ -10,6 +10,7 @@ ignition:
       - local: vaultwarden.ign
       - local: thelounge.ign
       - local: site.ign
+      - local: mumble.ign
 
 passwd:
   users:
