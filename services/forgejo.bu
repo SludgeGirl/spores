@@ -59,8 +59,17 @@ storage:
           Environment=FORGEJO__actions__DEFAULT_ACTIONS_URL=https://github.com
           Volume=/var/lib/data/forgejo/secrets:/secrets:z,ro
           Volume=/var/lib/data/forgejo/data:/data:z,rw
-          PodmanArgs=--cpus=1 --memory=500m
+          PodmanArgs=--cpus=1 --memory=1g
           AutoUpdate=registry
+          Label=traefik.enable="true"
+          Label=traefik.http.routers.anubis-forgejo.rule=Host'(`git.sludge.network`)'
+          Label=traefik.http.middlewares.anubis-forgejo-https-redirect.redirectscheme.scheme="https"
+          Label=traefik.http.routers.anubis-forgejo.middlewares="anubis-forgejo-https-redirect"
+          Label=traefik.http.routers.anubis-forgejo-secure.entrypoints="https"
+          Label=traefik.http.routers.anubis-forgejo-secure.rule=Host'(`git.sludge.network`)'
+          Label=traefik.http.routers.anubis-forgejo-secure.tls="true"
+          Label=traefik.http.routers.anubis-forgejo-secure.tls.certresolver=lets-encrypt
+          Label=traefik.http.services.anubis-forgejo.loadbalancer.server.port="3000"
 
           [Install]
           WantedBy=multi-user.target
@@ -96,36 +105,6 @@ storage:
           Environment=POSTGRES_HOST_AUTH_METHOD=trust
           Environment=PGDATA=/var/lib/postgresql/data/pgdata
           Volume=postgres-forgejo.volume:/var/lib/postgresql/data:z,rw
-          AutoUpdate=registry
-
-          [Install]
-          WantedBy=multi-user.target
-
-    - path: /etc/containers/systemd/anubis-forgejo.container
-      contents:
-        inline: |
-          [Unit]
-          Description=Anubis forgejo
-          Wants=network-online.target
-          After=network-online.target forgejo.service
-
-          [Service]
-          Restart=always
-
-          [Container]
-          ContainerName=anubis-forgejo
-          Image=ghcr.io/techarohq/anubis
-          Pod=forgejo.pod
-          Environment=TARGET=http://forgejo:3000
-          Label=traefik.enable="true"
-          Label=traefik.http.routers.anubis-forgejo.rule=Host'(`git.sludge.network`)'
-          Label=traefik.http.middlewares.anubis-forgejo-https-redirect.redirectscheme.scheme="https"
-          Label=traefik.http.routers.anubis-forgejo.middlewares="anubis-forgejo-https-redirect"
-          Label=traefik.http.routers.anubis-forgejo-secure.entrypoints="https"
-          Label=traefik.http.routers.anubis-forgejo-secure.rule=Host'(`git.sludge.network`)'
-          Label=traefik.http.routers.anubis-forgejo-secure.tls="true"
-          Label=traefik.http.routers.anubis-forgejo-secure.tls.certresolver=lets-encrypt
-          Label=traefik.http.services.anubis-forgejo.loadbalancer.server.port="8923"
           AutoUpdate=registry
 
           [Install]
