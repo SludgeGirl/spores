@@ -24,8 +24,11 @@ production_network.ign:
 production.ign: services.ign production_network.ign
 	butane -pd . production.bu > production.ign
 
-runner.ign:
-	butane runner.bu > runner.ign
+renovate.ign:
+	butane -pd services/ services/renovate.bu > services/renovate.ign
+
+runner.ign: renovate.ign
+	butane -pd . runner.bu > runner.ign
 
 test_network.ign:
 	butane test_network.bu > test_network.ign

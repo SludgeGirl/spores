@@ -1,0 +1,39 @@
+variant: fcos
+version: 1.6.0
+systemd:
+  units:
+    - name: renovate.timer
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Renovate Timer
+
+        [Timer]
+        OnCalendar=*:0/15
+        Persistent=true
+
+        [Install]
+        WantedBy=timers.target
+
+storage:
+  files:
+    - path: /etc/containers/systemd/renovate.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Renovate
+          Wants=network-online.target
+          After=network-online.target
+
+          [Service]
+          Restart=on-failure
+
+          [Container]
+          ContainerName=renovate
+          Image=mirror.gcr.io/renovate/renovate:latest
+          Environment=RENOVATE_PLATFORM=gitea
+          Environment=RENOVATE_TOKEN=RENOVATE_TOKEN_SECRET
+          Environment=RENOVATE_ENDPOINT=https://git.sludge.network/api/v1
+          Environment=RENOVATE_AUTODISCOVER=true
+          Environment=RENOVATE_GIT_AUTHOR="Renovate Bot <bot@renovateapp.com>"
+          AutoUpdate=registry
