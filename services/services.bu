@@ -8,6 +8,7 @@ ignition:
       - local: opengist.ign
       - local: forgejo.ign
       - local: vaultwarden.ign
+      - local: thelounge.ign
 
 passwd:
   users:

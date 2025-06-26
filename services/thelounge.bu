@@ -1,0 +1,33 @@
+variant: fcos
+version: 1.6.0
+storage:
+  files:
+    - path: /etc/containers/systemd/thelounge.container
+      contents:
+        inline: |
+          [Unit]
+          Description=The Lounge
+          Wants=network-online.target
+          After=network-online.target
+
+          [Service]
+          Restart=always
+
+          [Container]
+          ContainerName=thelounge
+          Image=ghcr.io/thelounge/thelounge:latest
+          Volume=/var/lib/data/thelounge/data:/var/opt/thelounge:z,rw
+          Network=ipv6.network
+          Label=traefik.enable="true"
+          Label=traefik.http.routers.thelounge.rule=Host'(`irc.sludge.network`)'
+          Label=traefik.http.middlewares.thelounge-https-redirect.redirectscheme.scheme="https"
+          Label=traefik.http.routers.thelounge.middlewares="thelounge-https-redirect"
+          Label=traefik.http.routers.thelounge-secure.entrypoints="https"
+          Label=traefik.http.routers.thelounge-secure.rule=Host'(`irc.sludge.network`)'
+          Label=traefik.http.routers.thelounge-secure.tls="true"
+          Label=traefik.http.routers.thelounge-secure.tls.certresolver=lets-encrypt
+          Label=traefik.http.services.thelounge.loadbalancer.server.port="9000"
+          AutoUpdate=registry
+
+          [Install]
+          WantedBy=multi-user.target
