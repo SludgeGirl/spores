@@ -1,0 +1,21 @@
+variant: fcos
+version: 1.6.0
+storage:
+  files:
+    - path: /etc/containers/systemd/mumble.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Mumble
+          Wants=network-online.target
+          After=network-online.target
+
+          [Container]
+          ContainerName=mumble
+          Image=mirror.gcr.io/mumblevoip/mumble-server:latest
+          Volume=/var/lib/data/mumble/data:/data:z,rw
+          EnvironmentFile=/var/lib/data/mumble/secrets/admin
+          PublishPort=64738:64738/tcp
+          PublishPort=64738:64738/udp
+          Network=ipv6.network
+          AutoUpdate=registry
