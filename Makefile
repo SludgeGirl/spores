@@ -18,7 +18,10 @@ vaultwarden.ign:
 thelounge.ign:
 	butane services/thelounge.bu > services/thelounge.ign
 
-services.ign: opengist.ign nextcloud.ign sludgebin.ign forgejo.ign vaultwarden.ign thelounge.ign
+site.ign:
+	butane services/site.bu > services/site.ign
+
+services.ign: opengist.ign nextcloud.ign sludgebin.ign forgejo.ign vaultwarden.ign thelounge.ign site.ign
 	butane -pd services/ services/services.bu > services/services.ign
 
 production_network.ign:

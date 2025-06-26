@@ -9,6 +9,7 @@ ignition:
       - local: forgejo.ign
       - local: vaultwarden.ign
       - local: thelounge.ign
+      - local: site.ign
 
 passwd:
   users:
