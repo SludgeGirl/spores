@@ -36,27 +36,6 @@ storage:
           Pod=vaultwarden.pod
           HealthCmd=curl -sSf 'http://localhost:80/'
           Volume=/var/lib/data/vaultwarden:/data:z,rw
-          AutoUpdate=registry
-
-          [Install]
-          WantedBy=multi-user.target
-
-    - path: /etc/containers/systemd/anubis-vaultwarden.container
-      contents:
-        inline: |
-          [Unit]
-          Description=Anubis Vaultwarden
-          Wants=network-online.target
-          After=network-online.target vaultwarden.container
-
-          [Service]
-          Restart=always
-
-          [Container]
-          ContainerName=anubis-vaultwarden
-          Image=ghcr.io/techarohq/anubis
-          Pod=vaultwarden.pod
-          Environment=TARGET=http://vaultwarden:80
           Label=traefik.enable="true"
           Label=traefik.http.routers.anubis-vaultwarden.rule=Host'(`vw.sludge.network`)'
           Label=traefik.http.middlewares.vaultwarden-https-redirect.redirectscheme.scheme="https"
@@ -65,7 +44,7 @@ storage:
           Label=traefik.http.routers.anubis-vaultwarden-secure.rule=Host'(`vw.sludge.network`)'
           Label=traefik.http.routers.anubis-vaultwarden-secure.tls="true"
           Label=traefik.http.routers.anubis-vaultwarden-secure.tls.certresolver=lets-encrypt
-          Label=traefik.http.services.anubis-vaultwarden.loadbalancer.server.port="8923"
+          Label=traefik.http.services.anubis-vaultwarden.loadbalancer.server.port="80"
           AutoUpdate=registry
 
           [Install]
