@@ -28,7 +28,6 @@ storage:
 
           [Service]
           Restart=always
-          PreExec=mkdir -p /var/lib/data/vaultwarden
 
           [Container]
           ContainerName=vaultwarden
