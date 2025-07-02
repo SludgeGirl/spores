@@ -31,7 +31,7 @@ storage:
           Image=git.sludge.network/sludge/borg-container:latest
           Volume=/var/lib/data:/mnt:z,ro
           Volume=/var/lib/data/backups:/backups:z,rw
-          Environment=BORG_EXTRA_ARGS=--exclude=/mnt/backups
+          Environment=BORG_EXTRA_ARGS=--exclude=/mnt/backups --exclude=/mnt/thelounge/data/uploads
           EnvironmentFile=/var/lib/data/borg/secrets
           Network=ipv6.network
           AutoUpdate=registry

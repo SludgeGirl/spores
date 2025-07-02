@@ -45,6 +45,33 @@ systemd:
         [Install]
         WantedBy=multi-user.target
 
+    - name: thelounge-cleanup.timer
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Timer for thelounge cleanup
+
+        [Timer]
+        OnCalendar=daily
+        RandomizedDelaySec=900
+        Persistent=true
+
+        [Install]
+        WantedBy=timers.target
+
+    - name: thelounge-cleanup.service
+      contents: |
+        [Unit]
+        Description=Thelounge cleanup
+
+        [Service]
+        Type=oneshot
+        SuccessExitStatus=0
+        ExecStart=/usr/bin/find /var/lib/data/thelounge/data/uploads -type f -mtime +7 -print -delete
+
+        [Install]
+        WantedBy=default.target
+
 storage:
   files:
     - path: /etc/hostname
