@@ -1,0 +1,37 @@
+variant: fcos
+version: 1.6.0
+systemd:
+  units:
+    - name: borg-backup.timer
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Timer for Borg Backup Runner
+
+        [Timer]
+        OnCalendar=daily
+        RandomizedDelaySec=900
+        Persistent=true
+
+        [Install]
+        WantedBy=timers.target
+
+storage:
+  files:
+    - path: /etc/containers/systemd/borg-backup.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Borg Backup Runner
+          Wants=network-online.target
+          After=network-online.target forgejo.service
+
+          [Container]
+          ContainerName=borg-backup
+          Image=git.sludge.network/sludge/borg-container:latest
+          Volume=/var/lib/data:/mnt:z,ro
+          Volume=/var/lib/data/backups:/backups:z,rw
+          Environment=BORG_EXTRA_ARGS=--exclude=/mnt/backups
+          EnvironmentFile=/var/lib/data/borg/secrets
+          Network=ipv6.network
+          AutoUpdate=registry

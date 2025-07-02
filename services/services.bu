@@ -11,6 +11,7 @@ ignition:
       - local: thelounge.ign
       - local: site.ign
       - local: mumble.ign
+      - local: backups.ign
 
 passwd:
   users:
