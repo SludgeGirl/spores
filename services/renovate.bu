@@ -33,6 +33,7 @@ storage:
           Image=mirror.gcr.io/renovate/renovate:latest
           Environment=RENOVATE_PLATFORM=gitea
           Environment=RENOVATE_TOKEN=RENOVATE_TOKEN_SECRET
+          Environment=RENOVATE_GITHUB_COM_TOKEN=RENOVATE_GITHUB_COM_TOKEN_SECRET
           Environment=RENOVATE_ENDPOINT=https://git.sludge.network/api/v1
           Environment=RENOVATE_AUTODISCOVER=true
           Environment=RENOVATE_GIT_AUTHOR="Renovate Bot <bot@renovateapp.com>"
