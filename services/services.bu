@@ -18,10 +18,7 @@ passwd:
     - name: root
       ssh_authorized_keys:
         - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILbw+AVDQKQn8qiYNFgzN1CNHNnv4fnmZmbeXbk7a013 sludge@apothecium
-
-    - name: core
-      ssh_authorized_keys:
-        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILbw+AVDQKQn8qiYNFgzN1CNHNnv4fnmZmbeXbk7a013 sludge@apothecium
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDKGc/5Ob0s5PQfs6bHYozP3/xMqyLVtW3imo5iRCAA9 sludge@conidia
 
 systemd:
   units:
