@@ -27,7 +27,10 @@ mumble.ign:
 backups.ign:
 	butane services/backups.bu > services/backups.ign
 
-services.ign: opengist.ign nextcloud.ign sludgebin.ign forgejo.ign vaultwarden.ign thelounge.ign site.ign mumble.ign backups.ign
+copyparty.ign:
+	butane services/copyparty.bu > services/copyparty.ign
+
+services.ign: opengist.ign nextcloud.ign sludgebin.ign forgejo.ign vaultwarden.ign thelounge.ign site.ign mumble.ign backups.ign copyparty.ign
 	butane -pd services/ services/services.bu > services/services.ign
 
 production_network.ign:

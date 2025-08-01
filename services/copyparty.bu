@@ -1,0 +1,58 @@
+variant: fcos
+version: 1.6.0
+storage:
+  files:
+    - path: /etc/containers/systemd/copyparty.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Copyparty
+          Wants=network-online.target
+          After=network-online.target
+          PartOf=rclone-copyparty.service
+
+          [Service]
+          Restart=always
+
+          [Container]
+          ContainerName=copyparty
+          Image=mirror.gcr.io/copyparty/ac:latest
+          Volume=/mnt/copyparty:/mnt:shared,z
+          Volume=/var/lib/data/copyparty/config:/cfg:z
+          AutoUpdate=registry
+          Label=traefik.enable="true"
+          Label=traefik.http.routers.anubis-copyparty.rule=Host'(`copyparty.sludge.network`)'
+          Label=traefik.http.middlewares.anubis-copyparty-https-redirect.redirectscheme.scheme="https"
+          Label=traefik.http.routers.anubis-copyparty.middlewares="anubis-copyparty-https-redirect"
+          Label=traefik.http.routers.anubis-copyparty-secure.entrypoints="https"
+          Label=traefik.http.routers.anubis-copyparty-secure.rule=Host'(`copyparty.sludge.network`)'
+          Label=traefik.http.routers.anubis-copyparty-secure.tls="true"
+          Label=traefik.http.routers.anubis-copyparty-secure.tls.certresolver=lets-encrypt
+          Label=traefik.http.services.anubis-copyparty.loadbalancer.server.port="3923"
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - path: /etc/containers/systemd/rclone-copyparty.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Rclone Copyparty
+          Wants=network-online.target
+          After=network-online.target
+
+          [Service]
+          Restart=always
+          ExecStartPre=mkdir -p /mnt/copyparty
+          ExecStopPost=umount /mnt/copyparty
+
+          [Container]
+          ContainerName=rclone-copyparty
+          Image=mirror.gcr.io/rclone/rclone:latest
+          Exec=--allow-non-empty -v mount --vfs-cache-mode writes :s3,access_key_id=COPYPARTY_ACCESS_KEY,secret_access_key=COPYPARTY_SECRET_ACCESS_KEY,endpoint=nbg1.your-objectstorage.com:/copyparty/ /mnt
+          PodmanArgs=--privileged
+          Volume=/mnt/copyparty:/mnt:shared,z
+          AutoUpdate=registry
+
+          [Install]
+          WantedBy=multi-user.target

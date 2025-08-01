@@ -3,5 +3,5 @@ version: 1.6.0
 ignition:
   config:
     merge:
-      - local: services.ign
+      - local: services/services.ign
       - local: test_network.ign
