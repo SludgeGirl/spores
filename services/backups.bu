@@ -9,7 +9,7 @@ systemd:
         Description=Timer for Borg Backup Runner
 
         [Timer]
-        OnCalendar=daily
+        OnCalendar=weekly
         RandomizedDelaySec=900
         Persistent=true
 
@@ -27,7 +27,7 @@ storage:
           After=network-online.target forgejo.service
 
           [Service]
-          ExecStartPre=/bin/bash -c "/usr/bin/ls /etc/containers/systemd/ | /usr/bin/grep container | /usr/bin/grep -v borg-backup | /usr/bin/sed -e 's/container/service/' | /usr/bin/xargs systemctl stop"
+          ExecStartPre=/bin/bash -c "/usr/bin/podman pull git.sludge.network/sludge/borg-container:latest && /usr/bin/ls /etc/containers/systemd/ | /usr/bin/grep container | /usr/bin/grep -v borg-backup | /usr/bin/sed -e 's/container/service/' | /usr/bin/xargs systemctl stop"
           ExecStopPost=/bin/bash -c "/usr/bin/ls /etc/containers/systemd/ | /usr/bin/grep container | /usr/bin/grep -v borg-backup | /usr/bin/sed -e 's/container/service/' | /usr/bin/xargs systemctl start"
 
           [Container]
