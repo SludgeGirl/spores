@@ -19,14 +19,47 @@ storage:
           Image=git.sludge.network/sludge/sludge-site:latest
           HealthCmd=curl -sSf 'http://localhost:80/'
           Label=traefik.enable="true"
-          Label=traefik.http.routers.sludge-site.rule=Host'(`sludge.network`)'
+
+          Label=traefik.http.routers.sludge-site-tor.rule=Host(`nswaem6iekkoigf4vpyf4w6swx6hqwgrdgevz2ahuefpiz62ekvulyyd.onion`)
+          Label=traefik.http.routers.sludge-site-tor.entryPoints=http
+          Label=traefik.http.routers.sludge-site-tor.priority=2
+          Label=traefik.http.middlewares.sludge-site-tor-header.headers.customresponseheaders.Onion-Location=http://nswaem6iekkoigf4vpyf4w6swx6hqwgrdgevz2ahuefpiz62ekvulyyd.onion
+
+          Label=traefik.http.routers.sludge-site.rule=Host(`sludge.network`)
+          Label=traefik.http.routers.sludge-site.entryPoints=http
+          Label=traefik.http.routers.sludge-site.priority=1
           Label=traefik.http.middlewares.sludge-site-https-redirect.redirectscheme.scheme="https"
           Label=traefik.http.routers.sludge-site.middlewares="sludge-site-https-redirect"
+
           Label=traefik.http.routers.sludge-site-secure.entrypoints="https"
-          Label=traefik.http.routers.sludge-site-secure.rule=Host'(`sludge.network`)'
+          Label=traefik.http.routers.sludge-site-secure.rule=Host(`sludge.network`)
           Label=traefik.http.routers.sludge-site-secure.tls="true"
           Label=traefik.http.routers.sludge-site-secure.tls.certresolver=lets-encrypt
-          Label=traefik.http.services.sludge-site.loadbalancer.server.port="80"
+          Label=traefik.http.routers.sludge-site-secure.middlewares="sludge-site-tor-header"
+          AutoUpdate=registry
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - path: /etc/containers/systemd/sludge-site-tor.container
+      contents:
+        inline: |
+          [Unit]
+          Description=sludge-site tor
+          Wants=network-online.target
+          After=network-online.target sludge-site.service
+
+          [Service]
+          Restart=always
+          RestartSec=60
+
+          [Container]
+          ContainerName=sludge-site-tor
+          Image=containers.torproject.org/tpo/onion-services/onimages/tor:latest
+          Volume=/var/lib/data/tor/sludge-site:/var/lib/tor:z,rw
+          Entrypoint=/usr/bin/tor
+          Exec=--RunAsDaemon 0 --HiddenServiceDir /var/lib/tor --HiddenServicePort "80 traefik:80"
+          Network=traefik.network
           AutoUpdate=registry
 
           [Install]
