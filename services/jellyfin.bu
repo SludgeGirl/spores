@@ -1,0 +1,37 @@
+variant: fcos
+version: 1.6.0
+storage:
+  files:
+    - path: /etc/containers/systemd/jellyfin.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Jellyfin
+          Wants=network-online.target
+          After=network-online.target rclone-copyparty.service
+
+          [Container]
+          Image=ghcr.io/jellyfin/jellyfin:latest
+          Mount=type=bind,source=/mnt/copyparty/copyparty/Music,target=/music,relabel=shared
+          Volume=/var/lib/data/jellyfin/config:/config:Z
+          Volume=jellyfin-cache.volume:/cache:Z
+
+          Label=traefik.enable="true"
+          Label=traefik.http.routers.jellyfin.rule=Host'(`jellyfin.sludge.network`)'
+          Label=traefik.http.middlewares.jellyfin-https-redirect.redirectscheme.scheme="https"
+          Label=traefik.http.routers.jellyfin.middlewares="jellyfin-https-redirect"
+          Label=traefik.http.routers.jellyfin-secure.entrypoints="https"
+          Label=traefik.http.routers.jellyfin-secure.rule=Host'(`jellyfin.sludge.network`)'
+          Label=traefik.http.routers.jellyfin-secure.tls="true"
+          Label=traefik.http.routers.jellyfin-secure.tls.certresolver=lets-encrypt
+          AutoUpdate=registry
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - path: /etc/containers/systemd/jellyfin-cache.volume
+      contents:
+        inline: |
+          [Volume]
+          VolumeName=JellyfinCache
+

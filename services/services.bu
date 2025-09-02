@@ -12,6 +12,7 @@ ignition:
       - local: mumble.ign
       - local: backups.ign
       - local: copyparty.ign
+      - local: jellyfin.ign
 
 passwd:
   users:
