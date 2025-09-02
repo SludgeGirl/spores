@@ -49,7 +49,7 @@ storage:
           [Container]
           ContainerName=rclone-copyparty
           Image=mirror.gcr.io/rclone/rclone:latest
-          Exec=--allow-non-empty -v mount --vfs-cache-mode all --vfs-cache-max-size 20G :s3,access_key_id=COPYPARTY_ACCESS_KEY,secret_access_key=COPYPARTY_SECRET_ACCESS_KEY,endpoint=nbg1.your-objectstorage.com:/copyparty/ /mnt
+          Exec=--allow-non-empty -v mount --vfs-cache-mode full --vfs-cache-max-size 20G :s3,access_key_id=COPYPARTY_ACCESS_KEY,secret_access_key=COPYPARTY_SECRET_ACCESS_KEY,endpoint=nbg1.your-objectstorage.com:/copyparty/ /mnt
           PodmanArgs=--privileged
           Volume=/mnt/copyparty:/mnt:shared,z
           AutoUpdate=registry
