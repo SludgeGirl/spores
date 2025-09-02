@@ -3,9 +3,6 @@ all: services.ign
 opengist.ign:
 	butane services/opengist.bu > services/opengist.ign
 
-nextcloud.ign:
-	butane services/nextcloud.bu > services/nextcloud.ign
-
 sludgebin.ign:
 	butane services/sludgebin.bu > services/sludgebin.ign
 
@@ -30,7 +27,7 @@ backups.ign:
 copyparty.ign:
 	butane services/copyparty.bu > services/copyparty.ign
 
-services.ign: opengist.ign nextcloud.ign sludgebin.ign forgejo.ign vaultwarden.ign thelounge.ign site.ign mumble.ign backups.ign copyparty.ign
+services.ign: opengist.ign sludgebin.ign forgejo.ign vaultwarden.ign thelounge.ign site.ign mumble.ign backups.ign copyparty.ign
 	butane -pd services/ services/services.bu > services/services.ign
 
 production_network.ign:

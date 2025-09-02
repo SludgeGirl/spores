@@ -3,7 +3,6 @@ version: 1.6.0
 ignition:
   config:
     merge:
-      - local: nextcloud.ign
       - local: sludgebin.ign
       - local: opengist.ign
       - local: forgejo.ign
