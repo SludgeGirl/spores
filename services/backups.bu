@@ -24,7 +24,7 @@ storage:
           [Unit]
           Description=Borg Backup Runner
           Wants=network-online.target
-          After=network-online.target forgejo.service
+          After=network-online.target forgejo.container
 
           [Service]
           ExecStartPre=/bin/bash -c "/usr/bin/podman pull git.sludge.network/sludge/borg-container:latest && /usr/bin/ls /etc/containers/systemd/ | /usr/bin/grep container | /usr/bin/grep -v borg-backup | /usr/bin/sed -e 's/container/service/' | /usr/bin/xargs systemctl stop"
