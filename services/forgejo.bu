@@ -25,8 +25,8 @@ storage:
         inline: |
           [Unit]
           Description=forgejo
-          Wants=network-online.target postgres-forgejo.service
-          After=network-online.target postgres-forgejo.service var-lib-data.mount
+          Wants=network-online.target
+          After=network-online.target postgres-forgejo.container var-lib-data.mount
 
           [Service]
           Restart=always
@@ -107,7 +107,7 @@ storage:
           [Unit]
           Description=Anubis forgejo
           Wants=network-online.target
-          After=network-online.target forgejo.service
+          After=network-online.target forgejo.container
 
           [Service]
           Restart=always

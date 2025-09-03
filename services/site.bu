@@ -8,7 +8,7 @@ storage:
           [Unit]
           Description=sludge-site
           Wants=network-online.target
-          After=network-online.target forgejo.service
+          After=network-online.target forgejo.container
 
           [Service]
           Restart=always
@@ -47,7 +47,8 @@ storage:
           [Unit]
           Description=sludge-site tor
           Wants=network-online.target
-          After=network-online.target sludge-site.service
+          After=network-online.target sludge-site.container
+          PartOf=traefik.container
 
           [Service]
           Restart=always

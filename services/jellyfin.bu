@@ -8,7 +8,12 @@ storage:
           [Unit]
           Description=Jellyfin
           Wants=network-online.target
-          After=network-online.target rclone-copyparty.service
+          After=network-online.target rclone-copyparty.container
+          PartOf=rclone-copyparty.container
+
+          [Service]
+          Restart=always
+          RestartSec=60
 
           [Container]
           Image=ghcr.io/jellyfin/jellyfin:latest
