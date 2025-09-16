@@ -52,6 +52,7 @@ storage:
           Exec=--allow-non-empty -v mount --vfs-cache-mode full --vfs-cache-max-size 20G :s3,access_key_id=COPYPARTY_ACCESS_KEY,secret_access_key=COPYPARTY_SECRET_ACCESS_KEY,endpoint=nbg1.your-objectstorage.com:/copyparty/ /mnt
           PodmanArgs=--privileged
           Volume=/mnt/copyparty:/mnt:shared,z
+          HealthCmd=ls /mnt/copyparty/Music || exit 1
           AutoUpdate=registry
 
           [Install]
