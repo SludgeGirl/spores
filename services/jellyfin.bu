@@ -7,7 +7,7 @@ storage:
         inline: |
           [Unit]
           Description=Jellyfin
-          Wants=network-online.target
+          Wants=network-online.target rclone-copyparty.container
           After=network-online.target rclone-copyparty.container
           PartOf=rclone-copyparty.container
 
