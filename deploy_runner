@@ -1,44 +1,52 @@
 #!/bin/bash
-make clean
-make runner.ign
-IGNITION_CONFIG="./runner.ign"
-
 source .env
 SERVER_NAME="runner"
 
 export HCLOUD_TOKEN="$HCLOUD_TOKEN"
 
 STREAM="stable"     # or "testing", "next"
-ARCH="x86"          # or "arm"
 
-IMAGE_ID="$(hcloud image list \
-    --type=snapshot \
-    --selector=os=fedora-coreos \
-    --output json \
-    | jq -r '.[0].id')"
-OLD_SERVER_ID="$(hcloud server list \
-    --selector=name=$SERVER_NAME \
-    --output json \
-    | jq -r '.[0].id')"
-echo "$SERVER_NAME"
+for ARCH in "arm" "x86"; do
+  echo "arch is: $ARCH"
+  make clean
+  make "runner_$ARCH.ign"
 
-if [ -n $OLD_SERVER_ID ]; then
-  echo "Shutting down old runner: $OLD_SERVER_ID"
-  hcloud server shutdown \
-    --wait \
-    --wait-timeout 300s \
-    "$OLD_SERVER_ID"
+  IGNITION_CONFIG="./runner_$ARCH.ign"
+  IMAGE_ID="$(hcloud image list \
+      --type=snapshot \
+      --architecture "$ARCH" \
+      --selector=os=fedora-coreos \
+      --output json \
+      | jq -r '.[0].id')"
+  OLD_SERVER_ID="$(hcloud server list \
+      --selector="name=$SERVER_NAME-$ARCH" \
+      --output json \
+      | jq -r '.[0].id')"
+  echo "$SERVER_NAME-$ARCH"
 
-  echo "Deleting old runner"
-  hcloud server delete "$OLD_SERVER_ID"
-fi;
+  if [ -n $OLD_SERVER_ID ]; then
+    echo "Shutting down old runner: $OLD_SERVER_ID"
+    hcloud server shutdown \
+      --wait \
+      --wait-timeout 300s \
+      "$OLD_SERVER_ID"
 
-echo "Creating replacement runner: $SERVER_NAME"
-hcloud server create \
-    --name "$SERVER_NAME" \
-    --type "cx22" \
-    --datacenter "$DATACENTER" \
-    --image "$IMAGE_ID" \
-    --ssh-key "$SSH_KEY_ID" \
-    --label name=$SERVER_NAME \
-    --user-data-from-file "$IGNITION_CONFIG"
+    echo "Deleting old runner"
+    hcloud server delete "$OLD_SERVER_ID"
+  fi;
+
+  SERVER_TYPE="cax11"
+  if [ "$ARCH" = "x86" ]; then
+    SERVER_TYPE="cx22"
+  fi
+
+  echo "Creating replacement runner: $SERVER_NAME-$ARCH"
+  hcloud server create \
+      --name "$SERVER_NAME-$ARCH" \
+      --type "$SERVER_TYPE" \
+      --datacenter "$DATACENTER" \
+      --image "$IMAGE_ID" \
+      --ssh-key "$SSH_KEY_ID" \
+      --label "name=$SERVER_NAME-$ARCH" \
+      --user-data-from-file "$IGNITION_CONFIG"
+done;

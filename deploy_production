@@ -8,7 +8,7 @@ source .env
 export HCLOUD_TOKEN="$HCLOUD_TOKEN"
 
 STREAM="stable"     # or "testing", "next"
-ARCH="x86"          # or "arm"
+ARCH="arm"          # x86 or "arm"
 
 if [ $# -eq 1 ]; then
   echo "Creating core-os snapshot from: $1"
@@ -27,6 +27,7 @@ fi;
 
 IMAGE_ID="$(hcloud image list \
     --type=snapshot \
+    --architecture $ARCH \
     --selector=os=fedora-coreos \
     --output json \
     | jq -r '.[0].id')"
@@ -48,7 +49,7 @@ if [ -n $OLD_SERVER_ID ]; then
   hcloud server delete "$OLD_SERVER_ID"
 fi;
 
-echo "Creating replacement server: $SERVER_NAME"
+echo "Creating replacement server: $SERVER_NAME - $IMAGE_ID"
 hcloud server create \
     --name "$SERVER_NAME" \
     --type "$SERVER_TYPE" \

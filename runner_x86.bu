@@ -1,0 +1,93 @@
+variant: fcos
+version: 1.6.0
+
+ignition:
+  config:
+    merge:
+      - local: services/renovate.ign
+
+passwd:
+  users:
+    - name: root
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILbw+AVDQKQn8qiYNFgzN1CNHNnv4fnmZmbeXbk7a013 sludge@apothecium
+
+systemd:
+  units:
+    - name: docker.service
+      mask: true
+
+    - name: podman-auto-update.timer
+      enabled: true
+
+storage:
+  files:
+    - path: /etc/containers/containers.conf
+      contents:
+        inline: |
+          [network]
+          network_backend = "netavark"
+
+    - path: /etc/containers/systemd/ipv6.network
+      contents:
+        inline: |
+          [Network]
+          Label=ipv6
+          IPv6=true
+
+    - path: /etc/zincati/config.d/55-update-window.toml
+      contents:
+        inline: |
+          [updates]
+          strategy = "periodic"
+
+          [[updates.periodic.window]]
+          days = [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ]
+          start_time = "01:00"
+          length_minutes = 60
+
+    - path: /etc/containers/systemd/docker-in-docker.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Docker in docker
+          Wants=network-online.target
+          After=network-online.target
+
+          [Container]
+          ContainerName=docker-in-docker
+          Image=mirror.gcr.io/docker:dind
+          Network=ipv6.network
+          PodmanArgs=--privileged
+          Environment=DOCKER_TLS_CERTDIR=
+          Environment=DOCKER_HOST=docker-in-docker
+          AutoUpdate=registry
+
+    - path: /etc/containers/systemd/runner.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Runner
+          Wants=network-online.target docker-in-docker.container
+          After=network-online.target docker-in-docker.container
+
+          [Service]
+          Restart=always
+          RestartSec=60
+
+          [Container]
+          ContainerName=runner
+          Image=data.forgejo.org/forgejo/runner:11
+          Exec=sh -c "forgejo-runner create-runner-file --instance https://git.sludge.network --secret FORGEJO_RUNNER_SECRET_x86 && \
+                sed -i 's/labels\": null/labels\": [\"ubuntu-latest:docker:\\/\\/node:24-bookworm\"]/g' .runner && \
+                cat .runner && \
+                forgejo-runner generate-config > config.yml && \
+                sed -i -e 's|network: .*|network: host|' config.yml && \
+                sed -i -e 's|^  envs:$$|  envs:\\n    DOCKER_HOST: tcp://docker-in-docker:2375|' config.yml && \
+                forgejo-runner --config config.yml daemon"
+          Environment=DOCKER_HOST=tcp://docker-in-docker:2375
+          Network=ipv6.network
+          AutoUpdate=registry
+
+          [Install]
+          WantedBy=multi-user.target
