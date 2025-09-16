@@ -1,11 +1,6 @@
 variant: fcos
 version: 1.6.0
 
-ignition:
-  config:
-    merge:
-      - local: services/renovate.ign
-
 passwd:
   users:
     - name: root
@@ -68,8 +63,8 @@ storage:
         inline: |
           [Unit]
           Description=Runner
-          Wants=network-online.target docker-in-docker.service
-          After=network-online.target docker-in-docker.service
+          Wants=network-online.target docker-in-docker.container
+          After=network-online.target docker-in-docker.container
 
           [Service]
           Restart=always
@@ -77,9 +72,9 @@ storage:
 
           [Container]
           ContainerName=runner
-          Image=data.forgejo.org/forgejo/runner:6
+          Image=data.forgejo.org/forgejo/runner:11
           Exec=sh -c "forgejo-runner create-runner-file --instance https://git.sludge.network --secret FORGEJO_RUNNER_SECRET && \
-                sed -i 's/labels\": null/labels\": [\"docker-cli:docker:\\/\\/code.forgejo.org\\/oci\\/docker:cli\", \"ubuntu-latest:docker:\\/\\/node:20-bookworm\", \"ubuntu-24.04:docker:\\/\\/node:20-bookworm\", \"ubuntu-24.04-arm:docker:\\/\\/node:20-bookworm\"]/g' .runner && \
+                sed -i 's/labels\": null/labels\": [\"ubuntu-latest-arm:docker:\\/\\/node:24-bookworm\"]/g' .runner && \
                 cat .runner && \
                 forgejo-runner generate-config > config.yml && \
                 sed -i -e 's|network: .*|network: host|' config.yml && \
