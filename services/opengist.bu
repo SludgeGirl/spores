@@ -56,7 +56,7 @@ storage:
 
           [Container]
           ContainerName=anubis-opengist
-          Image=ghcr.io/techarohq/anubis
+          Image=ghcr.io/techarohq/anubis:latest
           Pod=opengist.pod
           Environment=TARGET=http://opengist:6157
           Label=traefik.enable="true"

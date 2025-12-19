@@ -72,6 +72,18 @@ systemd:
 
 storage:
   files:
+    - path: /etc/registry/auth.json
+      overwrite: true
+      contents:
+        inline: |
+          {
+            "auths": {
+              "git.sludge.network": {
+                "auth": "GIT_REGISTRY_AUTH_STRING"
+              }
+            }
+          }
+
     - path: /etc/hostname
       overwrite: true
       contents:
@@ -112,7 +124,7 @@ storage:
 
           [Container]
           ContainerName=traefik
-          Image=mirror.gcr.io/traefik
+          Image=mirror.gcr.io/traefik:latest
           Volume=/run/podman/podman.sock:/var/run/docker.sock:z
           Volume=/var/lib/data/traefik/acme.json:/acme.json:z,rw
           PublishPort=8080:8080
