@@ -33,7 +33,7 @@ storage:
 
           [Container]
           ContainerName=forgejo
-          Image=codeberg.org/forgejo/forgejo:11
+          Image=codeberg.org/forgejo/forgejo:13
           Pod=forgejo.pod
           HealthCmd=curl -sSf 'http://localhost:3000/api/healthz' | grep pass || exit 1
           Environment=USER_UID=1000
@@ -101,6 +101,14 @@ storage:
           [Install]
           WantedBy=multi-user.target
 
+    - path: /var/anubis-forgejo.yaml
+      overwrite: true
+      contents:
+        inline: |
+          bots:
+            - import: (data)/meta/default-config.yaml
+            - import: (data)/clients/docker-client.yaml
+
     - path: /etc/containers/systemd/anubis-forgejo.container
       contents:
         inline: |
@@ -114,7 +122,7 @@ storage:
 
           [Container]
           ContainerName=anubis-forgejo
-          Image=ghcr.io/techarohq/anubis
+          Image=ghcr.io/techarohq/anubis:latest
           Pod=forgejo.pod
           Environment=TARGET=http://forgejo:3000
           Label=traefik.enable="true"
@@ -126,6 +134,8 @@ storage:
           Label=traefik.http.routers.anubis-forgejo-secure.tls="true"
           Label=traefik.http.routers.anubis-forgejo-secure.tls.certresolver=lets-encrypt
           Label=traefik.http.services.anubis-forgejo.loadbalancer.server.port="8923"
+          Environment=POLICY_FNAME=/var/anubis-forgejo.yaml
+          Volume=/var/anubis-forgejo.yaml:/data/anubis-forgejo.yaml:Z,ro
           AutoUpdate=registry
 
           [Install]

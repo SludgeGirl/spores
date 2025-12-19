@@ -77,7 +77,7 @@ storage:
 
           [Container]
           ContainerName=runner
-          Image=data.forgejo.org/forgejo/runner:11
+          Image=data.forgejo.org/forgejo/runner:12
           Exec=sh -c "forgejo-runner create-runner-file --instance https://git.sludge.network --secret FORGEJO_RUNNER_SECRET_x86 && \
                 sed -i 's/labels\": null/labels\": [\"ubuntu-latest:docker:\\/\\/node:24-bookworm\"]/g' .runner && \
                 cat .runner && \
