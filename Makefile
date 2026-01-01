@@ -30,7 +30,10 @@ copyparty.ign:
 jellyfin.ign:
 	butane services/jellyfin.bu > services/jellyfin.ign
 
-services.ign: opengist.ign sludgebin.ign forgejo.ign vaultwarden.ign thelounge.ign site.ign mumble.ign backups.ign copyparty.ign jellyfin.ign
+headscale.ign:
+	butane services/headscale.bu > services/headscale.ign
+
+services.ign: opengist.ign sludgebin.ign forgejo.ign vaultwarden.ign thelounge.ign site.ign mumble.ign backups.ign copyparty.ign jellyfin.ign headscale.ign
 	butane -pd services/ services/services.bu > services/services.ign
 
 production_network.ign:

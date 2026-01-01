@@ -13,6 +13,7 @@ ignition:
       - local: backups.ign
       - local: copyparty.ign
       - local: jellyfin.ign
+      - local: headscale.ign
 
 passwd:
   users:
