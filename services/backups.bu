@@ -33,7 +33,6 @@ storage:
           [Container]
           ContainerName=borg-backup
           Image=git.sludge.network/sludge/borg-container:latest
-          AuthFile=/etc/registry/auth.json
           Volume=/var/lib/data:/mnt:z,ro
           Volume=/var/lib/data/backups:/backups:z,rw
           Environment=BORG_EXTRA_ARGS=--exclude=/mnt/backups --exclude=/mnt/thelounge/data/uploads
