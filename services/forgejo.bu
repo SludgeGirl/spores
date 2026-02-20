@@ -33,7 +33,7 @@ storage:
 
           [Container]
           ContainerName=forgejo
-          Image=codeberg.org/forgejo/forgejo:13
+          Image=codeberg.org/forgejo/forgejo:14
           Pod=forgejo.pod
           HealthCmd=curl -sSf 'http://localhost:3000/api/healthz' | grep pass || exit 1
           Environment=USER_UID=1000
@@ -59,7 +59,7 @@ storage:
           Environment=FORGEJO__actions__DEFAULT_ACTIONS_URL=https://github.com
           Volume=/var/lib/data/forgejo/secrets:/secrets:z,ro
           Volume=/var/lib/data/forgejo/data:/data:z,rw
-          PodmanArgs=--cpus=1 --memory=1g
+          PodmanArgs=--cpus=2 --memory=4g
           AutoUpdate=registry
 
           [Install]
