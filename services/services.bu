@@ -128,9 +128,9 @@ storage:
           Image=mirror.gcr.io/traefik:latest
           Volume=/run/podman/podman.sock:/var/run/docker.sock:z
           Volume=/var/lib/data/traefik/acme.json:/acme.json:z,rw
-          PublishPort=8080:8080
           PublishPort=80:80
           PublishPort=443:443
+          PublishPort=6697:6697
           Exec=--log.level=info \
                 --accesslog=true \
                 --ping=true \
@@ -141,6 +141,7 @@ storage:
                 --certificatesresolvers.lets-encrypt.acme.tlschallenge=true \
                 --entrypoints.http.address=":80" \
                 --entrypoints.https.address=":443" \
+                --entrypoints.ircs.address=":6697" \
                 --entryPoints.https.transport.respondingTimeouts.readTimeout=0 \
                 --providers.docker=true \
                 --providers.docker.exposedbydefault=false

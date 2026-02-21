@@ -1,0 +1,27 @@
+variant: fcos
+version: 1.6.0
+storage:
+  files:
+    - path: /etc/containers/systemd/soju.container
+      contents:
+        inline: |
+          [Container]
+          Image=codeberg.org/emersion/soju:latest
+          AutoUpdate=registry
+          Volume=/var/lib/data/soju/config:/soju-config:Z
+          Volume=/var/lib/data/soju/db:/db:Z
+          Volume=/var/lib/data/soju/uploads:/uploads:Z
+
+          Label=traefik.enable="true"
+          Label=traefik.tcp.routers.soju.entrypoints="ircs"
+          Label=traefik.tcp.routers.soju.rule=HostSNI'(`soju.sludge.network`)'
+          Label=traefik.tcp.routers.soju.service="soju"
+          Label=traefik.tcp.routers.soju.tls="true"
+          Label=traefik.tcp.routers.soju.tls.certresolver=lets-encrypt
+          Label=traefik.tcp.services.soju.loadbalancer.server.port="6667"
+
+          [Service]
+          Restart=always
+
+          [Install]
+          WantedBy=default.target
