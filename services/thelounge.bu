@@ -2,7 +2,7 @@ variant: fcos
 version: 1.6.0
 storage:
   files:
-    - path: /etc/containers/systemd/thelounge.container
+    - path: /etc/containers/systemd/thelounge.container.bak
       contents:
         inline: |
           [Unit]
