@@ -9,6 +9,9 @@ sludgebin.ign:
 soju.ign:
 	butane services/soju.bu > services/soju.ign
 
+ergo.ign:
+	butane services/ergo.bu > services/ergo.ign
+
 forgejo.ign:
 	butane services/forgejo.bu > services/forgejo.ign
 
@@ -36,7 +39,7 @@ jellyfin.ign:
 headscale.ign:
 	butane services/headscale.bu > services/headscale.ign
 
-services.ign: opengist.ign sludgebin.ign soju.ign forgejo.ign vaultwarden.ign thelounge.ign site.ign mumble.ign backups.ign copyparty.ign jellyfin.ign headscale.ign
+services.ign: opengist.ign sludgebin.ign soju.ign ergo.ign forgejo.ign vaultwarden.ign thelounge.ign site.ign mumble.ign backups.ign copyparty.ign jellyfin.ign headscale.ign
 	butane -pd services/ services/services.bu > services/services.ign
 
 production_network.ign:
