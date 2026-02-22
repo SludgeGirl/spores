@@ -135,7 +135,7 @@ storage:
           Image=mirror.gcr.io/traefik:latest
           Volume=/run/podman/podman.sock:/var/run/docker.sock:z
           Volume=/var/lib/data/traefik/acme.json:/acme.json:z,rw
-          Volume=/etc/traefik/config.toml:/etc/traefik/config.toml:z
+          Volume=/var/lib/data/traefik/config.toml:/etc/traefik/config.toml:z,rw
           PublishPort=80:80
           PublishPort=443:443
           PublishPort=6697:6697
