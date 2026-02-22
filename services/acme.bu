@@ -1,0 +1,44 @@
+variant: fcos
+version: 1.6.0
+systemd:
+  units:
+    - name: acme-renew.timer
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Timer for Acme Renewals
+
+        [Timer]
+        OnCalendar=daily
+        RandomizedDelaySec=900
+        Persistent=true
+
+        [Install]
+        WantedBy=timers.target
+
+storage:
+  files:
+    - path: /etc/containers/systemd/acme-renew.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Runner
+          Wants=network-online.target
+          After=network-online.target
+
+          [Service]
+          Restart=always
+          RestartSec=60
+          ExecStopPost=/bin/bash -c "systemctl restart ergo.service"
+
+          [Container]
+          Image=mirror.gcr.io/certbot/dns-rfc2136:latest
+          Volume=/var/lib/data/acme/certs:/etc/letsencrypt:z,rw
+          Volume=/var/lib/data/acme/config:/var/lib/letsencrypt:Z,rw
+          Volume=/var/lib/data/acme/rfc2136.ini:/rfc2136.ini:Z,ro
+          Exec=renew
+          Network=ipv6.network
+          AutoUpdate=registry
+
+          [Install]
+          WantedBy=multi-user.target
