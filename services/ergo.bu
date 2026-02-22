@@ -9,18 +9,18 @@ storage:
           Image=ghcr.io/ergochat/ergo:stable
           AutoUpdate=registry
           Volume=/var/lib/data/ergo:/ircd:Z
+          Volume=/var/lib/data/acme/certs:/certs:z,ro
 
           Label=traefik.enable="true"
           Label=traefik.tcp.routers.ergo.entrypoints="ircs"
           Label=traefik.tcp.routers.ergo.rule=HostSNI'(`irc.sludge.network`)'
           Label=traefik.tcp.routers.ergo.service="ergo"
-          Label=traefik.tcp.routers.ergo.tls="true"
-          Label=traefik.tcp.routers.ergo.tls.certresolver=lets-encrypt
-          Label=traefik.tcp.services.ergo.loadbalancer.server.port="6667"
+          Label=traefik.tcp.routers.ergo.tls.passthrough="true"
+          Label=traefik.tcp.services.ergo.loadbalancer.server.port="6697"
           Label=traefik.tcp.services.ergo.loadbalancer.proxyprotocol="true"
 
           [Service]
           Restart=always
 
           [Install]
-          WantedBy=default.target
+          WantedBy=multi-user.target
