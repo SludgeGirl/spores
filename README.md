@@ -1,6 +1,6 @@
-= Server configs
+# Server configs
 
-== Secrets
+## Secrets
 
 The generic secrets are stored in secrets.age, these can be regenerated using:
 ```bash
