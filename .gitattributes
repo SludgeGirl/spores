@@ -1,1 +1,1 @@
-*.bu text eol=lf filter=cleanPass
+*.bu text eol=lf filter=secrets
