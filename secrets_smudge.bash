@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ $# -gt 0 ]; then
   if [ ! -e secrets ]; then
-    secrets="$(age -d -i ~/.ssh/id_ed25519 secrets.age)"
+    secrets="$(age -d -i ~/.ssh/pq.key secrets.age)"
 
     if $?; then
       echo "$secrets" > secrets
