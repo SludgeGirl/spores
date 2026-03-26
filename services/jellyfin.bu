@@ -7,9 +7,9 @@ storage:
         inline: |
           [Unit]
           Description=Jellyfin
-          Wants=network-online.target rclone-copyparty.container
-          After=network-online.target rclone-copyparty.container
-          PartOf=rclone-copyparty.container
+          Wants=network-online.target rclone-copyparty.container rclone-storagebox.container
+          After=network-online.target rclone-copyparty.container rclone-storagebox.container
+          PartOf=rclone-copyparty.container rclone-storagebox.container
 
           [Service]
           Restart=always
@@ -17,7 +17,8 @@ storage:
 
           [Container]
           Image=ghcr.io/jellyfin/jellyfin:latest
-          Mount=type=bind,source=/mnt/copyparty/copyparty/Music,target=/music,relabel=shared
+          Mount=type=bind,source=/mnt/storagebox/music,target=/music,relabel=shared
+          Mount=type=bind,source=/mnt/storagebox/music-videos,target=/music-videos,relabel=shared
           Volume=/var/lib/data/jellyfin/config:/config:Z
           Volume=jellyfin-cache.volume:/cache:Z
 
@@ -40,3 +41,28 @@ storage:
           [Volume]
           VolumeName=JellyfinCache
 
+    - path: /etc/containers/systemd/rclone-storagebox.container
+      contents:
+        inline: |
+          [Unit]
+          Description=Rclone storagebox
+          Wants=network-online.target
+          After=network-online.target
+
+          [Service]
+          # Restart=always
+          ExecStartPre=mkdir -p /mnt/storagebox
+          ExecStopPost=umount /mnt/storagebox
+
+          [Container]
+          ContainerName=rclone-storagebox
+          Image=mirror.gcr.io/rclone/rclone:latest
+          Exec=--allow-non-empty -v mount --vfs-cache-mode full --vfs-cache-max-size 20G --sftp-user u564986 --sftp-pass "STORAGEBOX_SFTP_PASSWORD" --sftp-port 23 --sftp-host u564986.your-storagebox.de :sftp:/home/Music /mnt/
+          PodmanArgs=--privileged
+          Volume=/mnt/storagebox:/mnt/:shared,z
+          HealthCmd=ls /mnt/ || exit 1
+          Network=ipv6.network
+          AutoUpdate=registry
+
+          [Install]
+          WantedBy=multi-user.target
