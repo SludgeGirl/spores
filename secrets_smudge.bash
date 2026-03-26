@@ -3,7 +3,7 @@ if [ $# -gt 0 ]; then
   if [ ! -e secrets ]; then
     secrets="$(age -d -i ~/.ssh/pq.key secrets.age)"
 
-    if $?; then
+    if [ $? -eq 0 ]; then
       echo "$secrets" > secrets
     else
       >&2 echo "Failed to decrypt secrets"
