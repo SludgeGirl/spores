@@ -134,8 +134,6 @@ storage:
           Label=traefik.http.routers.anubis-forgejo-secure.tls="true"
           Label=traefik.http.routers.anubis-forgejo-secure.tls.certresolver=lets-encrypt
           Label=traefik.http.services.anubis-forgejo.loadbalancer.server.port="8923"
-          Environment=POLICY_FNAME=/var/anubis-forgejo.yaml
-          Volume=/var/anubis-forgejo.yaml:/data/anubis-forgejo.yaml:Z,ro
           AutoUpdate=registry
 
           [Install]
